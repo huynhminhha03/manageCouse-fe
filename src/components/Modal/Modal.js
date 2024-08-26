@@ -35,7 +35,7 @@ function Modal({ onClose }) {
             <div className={cx('overlay', { closing: isClosing })} onClick={handleClose}></div>
             <div className={cx('content', { closing: isClosing })}>
                 <button className={cx('close')} onClick={handleClose}>x</button>
-                : <Content />
+                : <Content closingModal={handleClose}/>
             </div>
         </div>
     );

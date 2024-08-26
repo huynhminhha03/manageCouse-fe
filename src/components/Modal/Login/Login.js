@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useRef } from 'react';
 import styles from './Login.module.scss';
 import InputWrapper from '~/components/InputWrapper';
 import { handleInputBlur } from '~/utils/handleInputBlur';
@@ -7,17 +7,14 @@ import { ErrorIcon } from '~/components/Icons';
 import RememberLogin from '~/components/RememberLogin';
 import api, { userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
-import { UserContext } from '~/context/UserContext';
-import axios from 'axios';
+
 
 const cx = classNames.bind(styles);
 
 function Login() {
-    const [username, setUsername] = useState({ value: 'ducmanhnguyen0710@gmail.com', error: '' });
-    const [password, setPassword] = useState({ value: '071003', error: '' });
-    const [isSubmitting, setIsSubmitting] = useState(false); // State for form submission
-
-    const { setCurrentUser } = useContext(UserContext);
+    const [username, setUsername] = useState({ value: 'hadep7a@gmail.com', error: '' });
+    const [password, setPassword] = useState({ value: 'minhha2k3', error: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const usernameInputRef = useRef(null);
 
@@ -25,28 +22,9 @@ function Login() {
         setter({ value: e.target.value, error: '' });
     };
 
-    useEffect(() => {
-        usernameInputRef.current.focus();
-        const fetchRequest = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/courses/results?title=Học'
-                //     , {
-                //     email: username.value,
-                //     password: password.value,
-                // }
-            );
-                console.log(response.data);
-            } catch (error) {
-                // Xử lý lỗi ở đây
-                console.log(error);
-            }
-        };
-        fetchRequest();
-    }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true); // Set isSubmitting to true
+        setIsSubmitting(true);
 
         try {
             const response = await api.post(userApis.login, {
@@ -54,13 +32,26 @@ function Login() {
                 password: password.value,
             });
 
-            localStorage.setItem('token', response.data);
-            setCurrentUser(true);
-            console.log(response.data);
+            localStorage.setItem('token', response.data.token);
+            window.location.reload();
+
         } catch (error) {
             // Xử lý lỗi ở đây
             setIsSubmitting(false); // Set isSubmitting to true
-            console.log(error);
+            if (error.response && error.response.data) {
+                const { message } = error.response.data;
+                // Xử lý lỗi và hiển thị thông báo tương ứng
+                setUsername((prevState) => ({
+                    ...prevState,
+                    error: message.includes('email') ? message : '',
+                }));
+                setPassword((prevState) => ({
+                    ...prevState,
+                    error: message.includes('password') ? message : '',
+                }));
+            } else {
+                console.log('Unexpected error: ', error);
+            }
         }
     };
 
@@ -107,7 +98,7 @@ function Login() {
                 <button
                     onClick={handleSubmit}
                     type="submit"
-                    disabled={!username.value || !password.value}
+                    disabled={!username.value || !password.value || isSubmitting}
                     className={cx('submit-btn', {
                         disabled: !username.value || !password.value,
                         rounded: true,

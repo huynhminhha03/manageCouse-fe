@@ -1,48 +1,41 @@
 import classNames from 'classnames/bind';
-import { useState, useCallback } from 'react';
-
-import styles from './CommentModal.module.scss';
+import { useState, useCallback, useEffect } from 'react';
 import { CloseIcon, NoCommentIcon } from '~/components/Icons';
 import CommentSection from '~/components/CommentSection';
 import Comment from '~/components/Comment';
+import api, { userApis } from '~/utils/api';
+
+import styles from './CommentModal.module.scss';
 
 const cx = classNames.bind(styles);
 
-function CommentModal({ onClose }) {
-
+function CommentModal({ onClose, type, type_id, commentCount, setCommentCount }) {
     const [isClosing, setIsClosing] = useState(false);
+    const [comments, setComments] = useState([]);
 
     const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
             onClose();
-        }, 300); 
+        }, 300);
     }, [onClose]);
-    
-    const [comments, setComments] = useState([
-        {
-            id: 1,
-            author: 'Hà Huỳnh Minh',
-            content: 'a',
-            replies: [
-                {
-                    id: 1,
-                    author: 'Hà Huỳnh Minh',
-                    content: 'a reply',
-                },
-            ],
-        },
-    ]);
 
-    const handleAddComment = (content) => {
-        const newComment = {
-            id: comments.length + 1,
-            author: 'Your Name',
-            content,
-            replies: [],
-        };
-        setComments([...comments, newComment]);
-    };
+    const fetchParentComments = useCallback(async () => {
+        try {
+            const response = await api.get(userApis.getParentComments(type, type_id));
+            setComments(response.data.parent_comments);
+            setCommentCount(response.data.total_comments);
+            console.log(response.data);
+        } catch (error) {
+            console.log('Error fetching comments:', error);
+        }
+    }, [type, type_id, setCommentCount]);
+
+    useEffect(() => {
+        fetchParentComments();
+    }, [fetchParentComments]);
+
+    
 
     return (
         <div className={cx('wrapper', { isClosing })}>
@@ -55,15 +48,29 @@ function CommentModal({ onClose }) {
                     <div className={cx('body')}>
                         <div className="container-fluid" style={{ padding: '16px' }}>
                             <div className={cx('content')}>
-                                <CommentSection comments={comments} onAddComment={handleAddComment} />
+                                <CommentSection
+                                    type={type}
+                                    type_id={type_id}
+                                    fetchParentComments={fetchParentComments}
+                                />
                             </div>
                             <div className={cx('show-comment')}>
                                 <div className={cx('header')}>
-                                    <h2 className={cx('title')}>0 bình luận</h2>
+                                    <h2 className={cx('title')}>{commentCount} bình luận</h2>
                                 </div>
 
-                                {comments[0].replies ? (
-                                    <Comment />
+                                {comments && comments.length > 0 ? (
+                                    comments.map((comment, index) => (
+                                        <div key={index}>
+                                            <Comment
+                                                fetchParentComments={fetchParentComments}
+                                                data={comment}
+                                                type={type}
+                                                type_id={type_id}
+                                            />
+
+                                        </div>
+                                    ))
                                 ) : (
                                     <div className={cx('comments')}>
                                         <NoCommentIcon />

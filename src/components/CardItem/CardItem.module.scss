@@ -60,38 +60,19 @@
     margin-top: auto;
 }
 
-.last-completed {
-    font-size: 1.3rem;
-    margin: 0 0 16px;
-    color: #666;
+.desc {
+    font-size: 1.4rem;
+    white-space: nowrap; /* Ngăn chặn xuống dòng */
+    overflow: hidden; /* Ẩn phần nội dung vượt quá */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm nếu nội dung bị cắt */
 }
 
-.progress-bar {
-    position: relative;
-    height: 8px;
-    background-color: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 8px;
-
-    &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: var(--progress);
-        background-color: var(--primary-color);
-        transition: width ease 1s;
-    }
-}
 
 .price {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
 }
 
 .old-price {
@@ -134,8 +115,3 @@
     }
 }
 
-.created-at {
-    font-size: 1.4rem;
-    color: #757575;
-    line-height: 1.4rem;
-}

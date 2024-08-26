@@ -1,25 +1,54 @@
 import classNames from 'classnames/bind';
 
-import { BookMarkIcon, OptionIcon } from '~/components/Icons';
+import { ActivedBookmarkIcon, BookMarkIcon, OptionIcon } from '~/components/Icons';
 import styles from './PostItem.module.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import config from '~/config';
+import { useEffect, useState } from 'react';
+import { authAPI, userApis } from '~/utils/api';
 
 const cx = classNames.bind(styles);
 
 function PostItem(params) {
-    const { src, alt, name, title, desc, tags, createAt } = params;
-    
+    const { src, alt, name, title, desc, content, tags, createAt, id, toCreator } = params;
+
+    const [activedBookmark, setActivedBookmark] = useState(false);
+
+    const bookmarkBlog = async () => {
+        try {
+            await authAPI().post(userApis.bookmarkBlog(id));
+            setActivedBookmark(!activedBookmark);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchHasBookmark = async () => {
+            try {
+                const response = await authAPI().get(userApis.checkBookmark(id));
+                setActivedBookmark(response.data.bookmarked);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchHasBookmark();
+    }, [id]);
+
+    const navigate = useNavigate();
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <div className={cx('author')}>
+                <div className={cx('author')} onClick={() => navigate(config.routes.profile(toCreator))}>
                     <div className={cx('avatar')}>
-                        <img src={src} alt={alt} />
+                        <img src={src || 'https://fullstack.edu.vn/assets/fallback-avatar-BFb1fhaR.jpg'} alt={alt} />
                     </div>
+
                     <span>{name}</span>
                 </div>
                 <div className={cx('actions')}>
-                    <div className={cx('bookmark-btn')}>
-                        <BookMarkIcon />
+                    <div className={cx('bookmark-btn', { actived: activedBookmark })} onClick={bookmarkBlog}>
+                        {activedBookmark ? <ActivedBookmarkIcon /> : <BookMarkIcon />}
                     </div>
                     <div className={cx('option-btn')}>
                         <OptionIcon />
@@ -28,21 +57,19 @@ function PostItem(params) {
             </div>
             <div className={cx('body')}>
                 <div className={cx('info')}>
-                    <h2 className={cx('title')}>
-                       {title}
-                    </h2>
-                    <p className={cx('desc')}>
-                        {desc}
-                    </p>
+                    <Link to={id}>
+                        <h2 className={cx('title')}>{title}</h2>
+                    </Link>
+                    <p className={cx('desc')}>{desc}</p>
+
                     <div className={cx('metaInfo')}>
-                        <a href="/blog/tag/" className={cx('tags')}>
-                            {tags}
-                        </a>
-                        <span>{createAt} ngày trước</span>
+                        {tags && (
+                            <a href="/blog/tag/" className={cx('tags')}>
+                                {tags}
+                            </a>
+                        )}
+                        <span>{createAt}</span>
                     </div>
-                </div>
-                <div className={cx('thumb')}>
-                    <img src="https://files.fullstack.edu.vn/f8-prod/blog_posts/10850/667550d384026.png" alt="thumb" />
                 </div>
             </div>
         </div>

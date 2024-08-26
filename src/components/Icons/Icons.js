@@ -1,4 +1,4 @@
-export const LikeIcon = ({ className, width = '1.6rem', height = '1,6rem' }) => {
+export const LikeIcon = ({ className, width = '1.6rem', height = '1.6rem' }) => {
     return (
         <svg
             className={className}
@@ -8,7 +8,7 @@ export const LikeIcon = ({ className, width = '1.6rem', height = '1,6rem' }) => 
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <g clip-path="url(#clip0_3766_16493)">
+            <g clipPath="url(#clip0_3766_16493)">
                 <path
                     d="M12 0C8.8174 0 5.76516 1.26428 3.51472 3.51472C1.26428 5.76516 0 8.8174 0 12C0 15.1826 1.26428 18.2348 3.51472 20.4853C5.76516 22.7357 8.8174 24 12 24C15.1826 24 18.2348 22.7357 20.4853 20.4853C22.7357 18.2348 24 15.1826 24 12C24 8.8174 22.7357 5.76516 20.4853 3.51472C18.2348 1.26428 15.1826 0 12 0V0Z"
                     fill="url(#paint0_linear_3766_16493)"
@@ -27,8 +27,8 @@ export const LikeIcon = ({ className, width = '1.6rem', height = '1,6rem' }) => 
                     y2="24"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stop-color="#18AFFF"></stop>
-                    <stop offset="1" stop-color="#0062DF"></stop>
+                    <stop stopColor="#18AFFF"></stop>
+                    <stop offset="1" stopColor="#0062DF"></stop>
                 </linearGradient>
                 <clipPath id="clip0_3766_16493">
                     <rect width="24" height="24" fill="white"></rect>

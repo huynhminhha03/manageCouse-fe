@@ -4,6 +4,8 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import styles from './Sidebar.module.scss';
 import { HomeIcon, PostIcon, RoadmapIcon } from '~/components/Icons';
 import config from '~/config';
+import { useContext } from 'react';
+import UserContext from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 
@@ -27,7 +29,8 @@ const sidebarIcons = [
 
 function Sidebar() {
     const location = useLocation();
-    // console.log(location);
+    const { user } = useContext(UserContext);
+    
     return (
         <nav className={cx('wrapper')}>
             <ul className={cx('list')}>

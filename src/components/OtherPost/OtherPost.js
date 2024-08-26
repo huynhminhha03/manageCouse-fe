@@ -1,25 +1,30 @@
 import classNames from 'classnames/bind';
 import styles from './OtherPost.module.scss';
-import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
-function OtherPost({ posts }) {
+function OtherPost({ posts, setBlogId }) {
+
+    const handleClick = (id) => {
+        setBlogId(id);
+        window.history.pushState(null, '', `/blog/${id}`);
+    }
+    console.log(posts);
     return (
         <aside className={cx('wrapper')}>
             <h3 className={cx('heading')}>Bài đăng cùng tác giả</h3>
-                {posts ? (
-            <ul className={cx('list')}>
-                   { posts.map((post) => {
+            {posts.length > 0 ? (
+                <ul className={cx('list')}>
+                    {posts.map((post, index) => {
                         return (
-                            <li>
-                                <Link to={post.to}>{post.title}</Link>
+                            <li key={index} onClick={() => handleClick(post._id)}>
+                                - {post.title}
                             </li>
                         );
                     })}
-            </ul>
-                ) : (
-                    <p className={cx('no-result')}>Tác giả chưa có bài đăng nào khác.</p>
-                )}
+                </ul>
+            ) : (
+                <p className={cx('no-result')}>Tác giả chưa có bài đăng nào khác.</p>
+            )}
         </aside>
     );
 }

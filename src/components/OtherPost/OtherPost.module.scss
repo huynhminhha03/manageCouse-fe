@@ -12,11 +12,12 @@
     list-style-type: disc;
     font-size: 1.6rem;
 
-        a {
-            display: inline-block;
-            padding: 4px 0;
-            color: #292929;
-        }
+    li {
+        display: block;
+        padding: 4px 0;
+        color: #292929;
+        cursor: pointer;
+    }
 }
 
 .no-result {

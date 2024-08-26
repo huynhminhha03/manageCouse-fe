@@ -1,6 +1,5 @@
 import classNames from 'classnames/bind';
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 import styles from './Register.module.scss';
 import InputWrapper from '~/components/InputWrapper';
@@ -24,7 +23,6 @@ function Register() {
     const timerRef = useRef(null);
 
     const nameInputRef = useRef(null);
-    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
         nameInputRef.current.focus();
@@ -83,9 +81,10 @@ function Register() {
                 email: email.value,
                 password: password.value,
             });
-            await localStorage.setItem(response.data);
-            
+            localStorage.setItem(response.data);
             console.log(response.data);
+
+            window.location.reload();
         } catch (error) {
             // Xử lý lỗi ở đây
             setIsSubmitting(false); // Set isSubmitting to true

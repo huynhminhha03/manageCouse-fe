@@ -5,7 +5,7 @@ import { HeartIcon, CommentIcon, RedHeartIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
-const Interact = React.memo(({ likeCount, activedLike, onClickLikeBtn, onClickCommentBtn }) => {
+const Interact = React.memo(({ commentCount, likeCount, activedLike, onClickLikeBtn, onClickCommentBtn }) => {
     return (
         <div className={cx('wrapper')}>
             <div
@@ -26,7 +26,7 @@ const Interact = React.memo(({ likeCount, activedLike, onClickLikeBtn, onClickCo
                 tabIndex={0}
             >
                 <CommentIcon />
-                <span>0</span>
+                <span>{commentCount}</span>
             </div>
         </div>
     );

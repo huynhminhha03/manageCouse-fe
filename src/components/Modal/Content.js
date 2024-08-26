@@ -17,7 +17,7 @@ const cx = classNames.bind(styles);
 const LoginIcons = [
     {
         icon: <UserIcon />,
-        title: 'Sử dụng email / số điện thoại',
+        title: 'Đăng nhập bằng Email',
         to: config.routes.loginEmail,
     },
     {
@@ -40,7 +40,7 @@ const LoginIcons = [
 const RegisterIcons = [
     {
         icon: <UserIcon />,
-        title: 'Đăng ký bằng email / số điện thoại',
+        title: 'Đăng ký bằng Email',
         to: config.routes.registerEmail,
     },
     {

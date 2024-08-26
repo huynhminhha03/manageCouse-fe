@@ -2,18 +2,51 @@ import classNames from 'classnames/bind';
 import styles from './MyBlog.module.scss';
 import HeadlessTippy from '@tippyjs/react/headless';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 import MainContent from '~/components/MainContent';
 import { OptionIcon } from '~/components/Icons';
+import { authAPI, userApis } from '~/utils/api';
+import { calculateTimeSinceCreation } from '~/utils/calculateTimeSinceCreation';
+import Modal from '~/components/DeleteModal'; // Import Modal component
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function MyBlog() {
-    const [showOptions, setShowOptions] = useState(false);
+    const [showOptions, setShowOptions] = useState(null); // Track which blog's options are shown
+    const [data, setData] = useState([]);
+    const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+    const [selectedBlog, setSelectedBlog] = useState(null); // State to track the selected blog for deletion
 
-    const [showDraft, setShowDraft] = useState(false);
-    const [showPublication, setShowPublication] = useState(false);
+    const navigate = useNavigate();
+
+    const fetchData = useCallback(async () => {
+        try {
+            const response = await authAPI().get(userApis.getMyBlogs);
+            setData(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const handleDelete = (blog) => {
+        setSelectedBlog(blog); // Store the selected blog for deletion
+        setIsModalOpen(true); // Open the modal
+    };
+
+    const handleEdit = (type_id) => {
+        navigate(`/posts/${type_id}/edit`);
+    };
+    const confirmDelete = () => {
+        // Handle the delete logic here
+        console.log('Deleting blog:', selectedBlog);
+        setIsModalOpen(false);
+    };
 
     return (
         <MainContent title={'Bài viết của tôi'}>
@@ -24,116 +57,64 @@ function MyBlog() {
                             <ul className={cx('tabs')}>
                                 <li>
                                     <span
-                                        className={cx({ actived: showDraft })}
-                                        onClick={() => {
-                                            setShowDraft(true);
-                                            setShowPublication(false);
-                                        }}
+                                        className={cx("actived")}
                                     >
-                                        Bản nháp (1)
-                                    </span>
-                                </li>
-
-                                <li>
-                                    <span
-                                        className={cx({ actived: showPublication })}
-                                        onClick={() => {
-                                            setShowPublication(true);
-                                            setShowDraft(false);
-                                        }}
-                                    >
-                                        Đã xuất bản (1)
+                                        Đã xuất bản ({data?.blogCount})
                                     </span>
                                 </li>
                             </ul>
                             <div className={cx('divider')}></div>
                         </div>
 
-                        {showDraft && (
-                            <>
-                                <div className={cx('wrapper')}>
-                                    <h3 title="Mình đã làm thế nào để hoàn thành một dự án website chỉ trong 15 ngày">
-                                        <Link to="/blog/id">
-                                            Mình đã làm thế nào để hoàn thành một dự án website chỉ trong 15 ngày Mình
-                                            đã làm thế nào để hoàn thành một dự án website chỉ trong 15 ngày
-                                        </Link>
+                        {data?.blogs &&
+                            data?.blogs.length > 0 &&
+                            data?.blogs.map((blog) => (
+                                <div key={blog?._id} className={cx('wrapper')}>
+                                    <h3 title={blog?.title}>
+                                        <Link to={`/blogs/${blog?._id}`}>{blog?.title}</Link>
                                     </h3>
                                     <div className={cx('author')}>
-                                        <Link to="/blog/id">
-                                            Chỉnh sửa 1 giờ trước
+                                        <Link to={`/blogs/${blog?._id}`}>
+                                            Chỉnh sửa {calculateTimeSinceCreation(blog?.updatedAt)}
                                         </Link>
                                         <span className={cx('dot')}>·</span>
                                         <span>
-                                            Tác giả <strong>Lý Cao Nguyên</strong>
+                                            Tác giả <strong>{blog?.creator.name}</strong>
                                         </span>
                                     </div>
                                     <HeadlessTippy
-                                        visible={showOptions}
+                                        visible={showOptions === blog?._id} // Check if the current blog's options should be shown
                                         interactive
                                         placement="bottom-end"
-                                        onClickOutside={() => setShowOptions(false)}
+                                        onClickOutside={() => setShowOptions(null)} // Close options when clicking outside
                                         render={(attrs) => (
                                             <div tabIndex="-1" className={cx('wrap-popper', 'options')} {...attrs}>
-                                                <span>Chỉnh sửa</span>
-                                                <span>Xóa</span>
+                                                <span onClick={() => handleEdit(blog?._id)}>Chỉnh sửa</span>
+                                                <span onClick={() => handleDelete(blog?._id)}>Xóa</span>{' '}
+                                                {/* Open modal on delete */}
                                             </div>
                                         )}
                                     >
                                         <div
                                             className={cx('more')}
-                                            aria-expanded={showOptions}
-                                            onClick={() => setShowOptions(!showOptions)}
+                                            aria-expanded={showOptions === blog?._id}
+                                            onClick={() => setShowOptions(showOptions === blog?._id ? null : blog?._id)} // Toggle options visibility
                                         >
                                             <OptionIcon />
                                         </div>
                                     </HeadlessTippy>
                                 </div>
-                            </>
-                        )}
-
-                        {showPublication && (
-                            <>
-                                <div className={cx('wrapper')}>
-                                    <h3 title="Mình đã làm thế nào để hoàn thành một dự án website chỉ trong 15 ngày">
-                                        <Link to="/blog/id">
-                                            hi
-                                        </Link>
-                                    </h3>
-                                    <div className={cx('author')}>
-                                        <Link to="/blog/id">
-                                            Chỉnh sửa 1 giờ trước
-                                        </Link>
-                                        <span className={cx('dot')}>·</span>
-                                        <span>
-                                            Tác giả <strong>Lý Cao Nguyên</strong>
-                                        </span>
-                                    </div>
-                                    <HeadlessTippy
-                                        visible={showOptions}
-                                        interactive
-                                        placement="bottom-end"
-                                        onClickOutside={() => setShowOptions(false)}
-                                        render={(attrs) => (
-                                            <div tabIndex="-1" className={cx('wrap-popper', 'options')} {...attrs}>
-                                                <span>Chỉnh sửa</span>
-                                                <span>Xóa</span>
-                                            </div>
-                                        )}
-                                    >
-                                        <div
-                                            className={cx('more')}
-                                            aria-expanded={showOptions}
-                                            onClick={() => setShowOptions(!showOptions)}
-                                        >
-                                            <OptionIcon />
-                                        </div>
-                                    </HeadlessTippy>
-                                </div>
-                            </>
-                        )}
+                            ))}
                     </div>
                 </div>
             </div>
+
+            {/* Modal for confirming deletion */}
+            {isModalOpen && (
+                <Modal title="Xác nhận Xóa" onClose={() => setIsModalOpen(false)} onConfirm={confirmDelete}>
+                    Bạn có chắc chắn muốn xóa bài viết này không?
+                </Modal>
+            )}
         </MainContent>
     );
 }

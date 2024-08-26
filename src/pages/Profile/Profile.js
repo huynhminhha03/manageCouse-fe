@@ -1,10 +1,29 @@
 import classNames from 'classnames/bind';
-
+import { useEffect, useState } from 'react';
 import styles from './Profile.module.scss';
 import { ParticipationIcon } from '~/components/Icons';
+import { authAPI, userApis } from '~/utils/api';
+import { calculateTimeSinceCreation } from '~/utils/calculateTimeSinceCreation';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 function Profile() {
+    const { slug } = useParams();
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await authAPI().get(userApis.getUserBySlug(slug));
+                setUserData(response.data);
+                console.log('user-data ', response.data);
+            } catch (error) {
+                // Xử lý lỗi ở đây
+                console.log(error);
+            }
+        };
+        fetchUserData();
+    }, [slug]);
     return (
         <div className={cx('page-wrapper')}>
             <div className={cx('banner')}>
@@ -12,13 +31,13 @@ function Profile() {
                     <div className={cx('user-avatar')}>
                         <div className={cx('avatar')}>
                             <img
-                                src="https://fullstack.edu.vn/assets/fallback-avatar-BFb1fhaR.jpg"
+                                src={userData?.avatar || 'https://fullstack.edu.vn/assets/fallback-avatar-BFb1fhaR.jpg'}
                                 alt="Hà Huỳnh Minh"
                             />
                         </div>
                     </div>
                     <div className={cx('user-name')}>
-                        <span>Hà Huỳnh Minh</span>
+                        <span>{userData?.name}</span>
                     </div>
                 </div>
             </div>
@@ -29,12 +48,12 @@ function Profile() {
                         <div className={cx('wrapper')}>
                             <h4 className={cx('title')}>Giới thiệu</h4>
                             <div className={cx('bio')}>
-                                <span>Hi</span>
+                                <span>{userData?.desc}</span>
                             </div>
                             <div className={cx('participation')}>
                                 <ParticipationIcon className={cx('participation-icon')} />
                                 <span>
-                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ 3 năm trước
+                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ {calculateTimeSinceCreation(userData?.createdAt)}
                                 </span>
                             </div>
                         </div>
