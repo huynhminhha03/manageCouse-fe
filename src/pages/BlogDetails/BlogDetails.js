@@ -116,7 +116,7 @@ function BlogDetails() {
     }
 
     return (
-        <div className="container-fluid">
+        <div className="container">
             <div className="row">
                 <div className="col col-xl-3">
                     <div className={cx('aside')}>

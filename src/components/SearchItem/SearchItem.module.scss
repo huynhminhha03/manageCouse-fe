@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     align-items: center;
-    padding: 6px 0;
+    padding: 8px 0;
 
     span {
         font-size: 1.4rem;
@@ -14,9 +14,13 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
     }
+
+    &:hover {
+        background-color: #f8f8f8;
+    }
 }
 
-.avatar {
+.image {
     --font-size: 3.6rem;
     font-size: var(--font-size);
     background: transparent;
@@ -27,5 +31,8 @@
         height: 32px;
         object-fit: cover;
         border-radius: 50%;
+        display: block;
     }
 }
+
+

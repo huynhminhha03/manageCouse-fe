@@ -12,6 +12,16 @@
     transition: border-color 0.2s ease-in-out;
 }
 
+.result-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: min(100vh - 96px - 60px, 734px);
+    background: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
+    border-radius: 8px;
+}
+
 .search-result {
     padding: 12px 24px;
 }

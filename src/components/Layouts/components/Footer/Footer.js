@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 function Footer() {
     return (
         <div className={cx('wrapper')}>
-            <div className="container-fluid">
+            <div className="container">
                 <div className="row">
                     <div className="col col-xl-3 col-md-4">
                         <div className={cx('column-top')}>

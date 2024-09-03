@@ -12,14 +12,14 @@ function Classify({ children, title, label, viewMore }) {
                 <h2 className={cx('heading')}>
                     <span>
                         {title}
-                        {label ? <span className={cx('label')}>{label}</span> : <></>}
+                        {label && <span className={cx('label')}>{label}</span>}
                     </span>
                 </h2>
                 {viewMore ? (
-                    <a className={cx('view-all')} href="/learning-paths">
+                    <div className={cx('view-all')}>
                         {viewMore}
                         <NextArrowIcon />
-                    </a>
+                    </div>
                 ) : (
                     <></>
                 )}

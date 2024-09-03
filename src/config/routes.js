@@ -6,8 +6,10 @@ const routes = {
     upload: '/upload',
     search: '/search',
 
-    courseDetails: (slug) => `course/${slug}`,
-    myCourseDetails: (slug) => `my-course/${slug}`,
+    courseDetails: (course_id) => `course/${course_id}`,
+
+
+    myCourseDetails: (course_id) => `my-course/${course_id}`,
 
     registeredCourse: '/registered-course',
     myCourse: '/my-course',

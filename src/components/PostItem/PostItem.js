@@ -4,15 +4,18 @@ import { ActivedBookmarkIcon, BookMarkIcon, OptionIcon } from '~/components/Icon
 import styles from './PostItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import config from '~/config';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { authAPI, userApis } from '~/utils/api';
+import UserContext from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 
 function PostItem(params) {
-    const { src, alt, name, title, desc, content, tags, createAt, id, toCreator } = params;
+    const { src, alt, name, title, desc, tags, createAt, id, toCreator } = params;
 
     const [activedBookmark, setActivedBookmark] = useState(false);
+
+    const { user } = useContext(UserContext);
 
     const bookmarkBlog = async () => {
         try {
@@ -24,16 +27,18 @@ function PostItem(params) {
     };
 
     useEffect(() => {
-        const fetchHasBookmark = async () => {
-            try {
-                const response = await authAPI().get(userApis.checkBookmark(id));
-                setActivedBookmark(response.data.bookmarked);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchHasBookmark();
-    }, [id]);
+        if (user) {
+            const fetchHasBookmark = async () => {
+                try {
+                    const response = await authAPI().get(userApis.checkBookmark(id));
+                    setActivedBookmark(response.data.bookmarked);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchHasBookmark();
+        }
+    }, [id, user]);
 
     const navigate = useNavigate();
     return (

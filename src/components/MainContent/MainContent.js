@@ -5,7 +5,6 @@ import styles from './MainContent.module.scss';
 const cx = classNames.bind(styles);
 
 function MainContent({ title, desc, isEmpty, children, noResults }) {
-    console.log(isEmpty);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container-top')}>

@@ -60,6 +60,11 @@
 
 .icon-link {
     transition: all .3s ease-in-out;
+    display: flex;
+
+    .lesson-name {
+        margin-left: 8px;
+    }
 }
 
 .purchase-badge {
@@ -143,4 +148,10 @@
 
 .title {
     color: #fff;
+}
+
+.start-time {
+    margin-top: 8px;
+    font-size: 1.4rem;
+    color: blue;
 }

@@ -46,7 +46,7 @@ function CommentModal({ onClose, type, type_id, commentCount, setCommentCount })
                 </div>
                 <div className={cx('comment-modal')}>
                     <div className={cx('body')}>
-                        <div className="container-fluid" style={{ padding: '16px' }}>
+                        <div className="container" style={{ padding: '16px' }}>
                             <div className={cx('content')}>
                                 <CommentSection
                                     type={type}

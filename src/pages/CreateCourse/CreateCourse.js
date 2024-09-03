@@ -1,25 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
+import { useNavigate, useParams } from 'react-router-dom';
+import { format, parseISO } from 'date-fns';
+
 import styles from './CreateCourse.module.scss';
 import { authAPI, userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
-import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function CreateCourse() {
     const [formData, setFormData] = useState({
-        title: 'Node & ExpressJS',
-        desc: 'Learn Node & ExpressJS with me!!!',
-        start_time: '',
+        title: 'Learn Node and ExpressJS',
+        desc: 'Learn Node and ExpressJS with many useful lessons',
+        start_time: '2024-09-15',
         price: '',
-        isFree: false,
+        is_free: false,
     });
-    const [image, setImage] = useState(null); // Thay đổi tên biến để lưu tệp hình ảnh
+    const [image, setImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { course_id } = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        if (course_id) {
+            const fetchMyCourseDetails = async () => {
+                try {
+                    const response = await authAPI().get(userApis.getMyCourseDetails(course_id));
+                    const course = response.data;
+                    const { start_time } = course;
+                    const formattedDate = format(parseISO(start_time), 'yyyy-MM-dd');
+
+                    setFormData({
+                        title: course.title || '',
+                        desc: course.desc || '',
+                        start_time: formattedDate || '',
+                        price: course.price || '',
+                        is_free: course.price === 0 || false,
+                    });
+                    setImagePreview(course.image_url);
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchMyCourseDetails();
+        }
+    }, [course_id]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -33,7 +65,6 @@ function CreateCourse() {
         const file = e.target.files[0];
         if (file) {
             setImage(file);
-            console.log(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
@@ -49,22 +80,32 @@ function CreateCourse() {
         dataToSubmit.append('title', formData.title);
         dataToSubmit.append('desc', formData.desc);
         dataToSubmit.append('start_time', formData.start_time);
-        dataToSubmit.append('price', formData.isFree ? 0 : formData.price);
-        dataToSubmit.append('isFree', formData.isFree);
-        dataToSubmit.append('image', image);
+        dataToSubmit.append('price', formData.is_free ? 0 : formData.price);
+        dataToSubmit.append('is_free', formData.is_free);
+        console.log('image', image);
+        console.log('dataToSubmit', dataToSubmit);
+        if (image) dataToSubmit.append('image', image);
 
         try {
             setIsSubmitting(true);
 
-            const response = await authAPI().post(userApis.createCourse, dataToSubmit, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            if (course_id) {
+                const response = await authAPI().patch(userApis.updateCourse(course_id), dataToSubmit, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                console.log(response.data);
+            } else {
+                const response = await authAPI().post(userApis.createCourse, dataToSubmit, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
 
-            console.log(response.data);
+                console.log(response.data);
+            }
             setIsSubmitting(false);
-
             navigate('/my-course');
         } catch (error) {
             setIsSubmitting(false);
@@ -74,7 +115,7 @@ function CreateCourse() {
 
     return (
         <form className={cx('course-form')} onSubmit={handleSubmit}>
-            <h1 className={cx('heading')}>Tạo khoá học mới</h1>
+            <h1 className={cx('heading')}>{course_id ? 'Chỉnh sửa khoá học' : 'Tạo khoá học mới'}</h1>
             <div className={cx('form-group')}>
                 <label htmlFor="title">Title</label>
                 <input
@@ -90,7 +131,7 @@ function CreateCourse() {
 
             <div className={cx('form-group')}>
                 <label htmlFor="image">Image</label>
-                <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} required />
+                <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} required={!course_id}/>
                 {imagePreview && (
                     <img src={imagePreview} alt="Preview of the selected file" className={cx('image-preview')} />
                 )}
@@ -119,7 +160,7 @@ function CreateCourse() {
                 />
             </div>
 
-            <div className={cx('form-group', { hidden: formData.isFree })}>
+            <div className={cx('form-group', { hidden: formData.is_free })}>
                 <label htmlFor="price">Price</label>
                 <input
                     type="number"
@@ -128,17 +169,17 @@ function CreateCourse() {
                     value={formData.price}
                     onChange={handleChange}
                     placeholder="Enter course price"
-                    required={!formData.isFree}
+                    required={!formData.is_free}
                 />
             </div>
 
             <div className={cx('form-group', 'checkbox-group')}>
-                <label htmlFor="isFree" className={cx('checkbox-label')}>
+                <label htmlFor="is_free" className={cx('checkbox-label')}>
                     <input
                         type="checkbox"
-                        id="isFree"
-                        name="isFree"
-                        checked={formData.isFree}
+                        id="is_free"
+                        name="is_free"
+                        checked={formData.is_free}
                         onChange={handleChange}
                     />
                     <span className={cx('checkbox-text')}>Is Free</span>
@@ -146,7 +187,7 @@ function CreateCourse() {
             </div>
 
             <button type="submit" className={cx('submit-button')} disabled={isSubmitting}>
-                {isSubmitting ? <Spinner /> : 'Submit'}
+                {isSubmitting ? <Spinner /> : course_id ? 'Chỉnh sửa' : 'Thêm khoá học'}
             </button>
         </form>
     );

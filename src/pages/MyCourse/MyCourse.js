@@ -10,11 +10,11 @@ function MyCourse() {
     const [myCourses, setMyCourses] = useState([]);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         const fetchMyCourses = async () => {
             try {
                 const response = await authAPI().get(userApis.getMyCourses);
                 setMyCourses(response.data);
-                console.log('myCourses ', response.data);
             } catch (error) {
                 // Xử lý lỗi ở đây
                 console.log(error);
@@ -31,13 +31,13 @@ function MyCourse() {
             noResults={'Chưa có khoá học nào. Tạo mới ngay!'}
         >
             <div>
-                <div className="container-fluid">
+                <div className="container">
                     <div className="row">
                         {myCourses.length > 0 &&
                             myCourses.map((course, index) => (
                                 <div key={index} className="col mt-5 col-lg-3">
                                     <CardItem
-                                        slug={course.slug}
+                                        id={course._id}
                                         src={course?.image_url}
                                         title={course?.title}
                                         desc={course?.desc}

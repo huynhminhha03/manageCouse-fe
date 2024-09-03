@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100%;
     border-radius: 16px;
+    border: 1px solid #ccc;
     background: #00000008;
     transition:
         transform 0.2s,
@@ -22,6 +23,7 @@
     border-radius: 16px 16px 0 0;
     object-fit: cover;
     overflow: hidden;
+    border-bottom: 1px solid #ccc;
 }
 
 .thumb {

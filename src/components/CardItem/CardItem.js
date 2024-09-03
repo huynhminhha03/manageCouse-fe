@@ -3,21 +3,20 @@ import { Link } from 'react-router-dom';
 
 import styles from './CardItem.module.scss';
 import images from '~/assets/images';
-import config from '~/config';
 
 const cx = classNames.bind(styles);
 
 function CardItem(data) {
-    const to = data.isMyCourse ? config.routes.myCourseDetails(data.slug) : config.routes.courseDetails(data.slug);
+    const course_id = data.isMyCourse ? `/my-course/${data.id}`: `/course/${data.id}`;
 
     return (
         <div className={cx('wrapper')}>
-            <Link to={to} className={cx('link')}>
+            <Link to={course_id} className={cx('link')}>
                 <img className={cx('thumb')} src={data.src} alt={data.title} />
             </Link>
             <div className={cx('content')}>
                 <h3 className={cx('title')}>
-                    <Link to={to}>{data.title}</Link>
+                    <Link to={course_id}>{data.title}</Link>
                 </h3>
                 <p className={cx('desc')}>{data.desc}</p>
                 {!data.isMyCourse && (
@@ -34,7 +33,7 @@ function CardItem(data) {
                                 <span>{data.name}</span>
                             </div>
                         </div>
-                    </>
+                    </> 
                 )}
             </div>
         </div>

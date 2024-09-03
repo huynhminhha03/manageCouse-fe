@@ -33,15 +33,14 @@ function Home() {
                         {courses &&
                             courses?.proCourses &&
                             courses?.proCourses.map((proCourse, index) => (
-                                <div className="col mt-5 col-lg-3 col-md-4 col-sm-6">
+                                <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        slug={proCourse.slug}
-                                        key={index}
+                                        id={proCourse._id}
                                         src={proCourse?.image_url}
                                         title={proCourse?.title}
                                         desc={proCourse?.desc}
                                         price={proCourse?.price}
-                                        isFree={proCourse?.isFree}
+                                        isFree={proCourse?.is_free}
                                         name={proCourse?.creator?.name}
                                         avatar={proCourse?.creator?.avatar}
                                     />
@@ -54,18 +53,17 @@ function Home() {
                     <div className="row">
                         {courses &&
                             courses?.freeCourses &&
-                            courses?.freeCourses.map((proCourse, index) => (
-                                <div className="col mt-5 col-lg-3 col-md-4 col-sm-6">
+                            courses?.freeCourses.map((freeCourse, index) => (
+                                <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        slug={proCourse.slug}
-                                        key={index}
-                                        src={proCourse?.image_url}
-                                        title={proCourse?.title}
-                                        desc={proCourse?.desc}
-                                        price={proCourse?.price}
-                                        isFree={proCourse?.isFree}
-                                        name={proCourse?.creator?.name}
-                                        avatar={proCourse?.creator?.avatar}
+                                        id={freeCourse._id}
+                                        src={freeCourse?.image_url}
+                                        title={freeCourse?.title}
+                                        desc={freeCourse?.desc}
+                                        price={freeCourse?.price}
+                                        isFree={freeCourse?.is_free}
+                                        name={freeCourse?.creator?.name}
+                                        avatar={freeCourse?.creator?.avatar}
                                     />
                                 </div>
                             ))}

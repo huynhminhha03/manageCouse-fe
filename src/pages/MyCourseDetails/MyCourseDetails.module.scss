@@ -1,0 +1,117 @@
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+}
+
+.course-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.course-info {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.course-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.course-desc {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.course-start,
+.course-price,
+.course-locked {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.course-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &-edit {
+            background-color: #007bff;
+            color: #fff;
+
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+
+        &-delete {
+            background-color: #dc3545;
+            color: #fff;
+
+            &:hover {
+                background-color: #c82333;
+            }
+        }
+    }
+}
+
+.lessons {
+    margin-top: 30px;
+
+    h2 {
+        font-size: 24px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .lesson-list {
+        list-style: none;
+        padding: 0;
+
+        .new-lesson {
+            margin-bottom: 20px;
+            display: block;
+        }
+        .lesson-item {
+            padding: 10px 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: black;
+
+            &:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+        }
+    }
+}

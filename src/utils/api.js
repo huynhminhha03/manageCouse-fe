@@ -8,10 +8,22 @@ export const userApis = {
     getUserBySlug: (slug) => `/users/${slug}`,
 
     getAllCourses: '/courses',
-    getCoursesBySlug: (slug) => `/courses/${slug}`,
+    getCoursesBySlug: '/courses/results',
+    getCourseDetails: (course_id) =>  `/courses/${course_id}`,
+    getQuickViewLessons: (course_id) =>  `/courses/${course_id}/lessons/quick-view`,
+    getLesson: (course_id, lesson_id) =>  `/courses/${course_id}/lessons/${lesson_id}`,
 
     getMyCourses: '/my-courses',
+    getMyCourseDetails: (course_id) =>  `/my-courses/${course_id}`,
     createCourse: '/my-courses',
+    updateCourse: (course_id) =>  `/my-courses/${course_id}`,
+    deleteCourse: (course_id) =>  `/my-courses/${course_id}`,
+
+    getLessonsByCourseId: (course_id) =>  `/my-courses/${course_id}/lessons`,
+    getLessonById: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
+    createLesson: (course_id) =>  `/my-courses/${course_id}/lessons`,
+    updateLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
+    deleteLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
 
     createBlog: '/my-blogs',
     getMyBlogs: '/my-blogs',

@@ -19,7 +19,7 @@ const CreateBlog = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
-    const { id } = useParams(); // Lấy id từ URL
+    const { id } = useParams(); 
 
     const isButtonDisabled = !title.trim() || !content.replace(/<\/?[^>]+(>|$)/g, '').trim();
 
