@@ -6,6 +6,7 @@ import { VideoIcon } from '~/components/Icons';
 import api, { userApis } from '~/utils/api';
 import { useParams } from 'react-router-dom';
 import formatDate from '~/utils/formatDate';
+import formatDuration from '~/utils/formatDuration';
 
 const cx = classNames.bind(styles);
 
@@ -68,7 +69,7 @@ function CourseDetails() {
                                             <VideoIcon />
                                             <div className={cx('lesson-name')}>{lesson?.title}</div>
                                         </span>
-                                        <span>{lesson?.duration || '00:00'}</span>
+                                        <span>{formatDuration(lesson?.duration) || '00:00'}</span>
                                     </div>
                                 ))}
                             </div>
