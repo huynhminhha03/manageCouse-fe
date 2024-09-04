@@ -12,9 +12,8 @@ const cx = classNames.bind(styles);
 
 function Register() {
     const [name, setName] = useState({ value: 'Huỳnh Minh Hà', error: '' });
-    const [email, setEmail] = useState({ value: 'hadep7a@gmail.com', error: '' });
+    const [email, setEmail] = useState({ value: 'hadep12a@gmail.com', error: '' });
     const [password, setPassword] = useState({ value: 'minhha2k3', error: '' });
-
     const [otp, setOtp] = useState({ value: '', error: '' });
     const [isCodeInputActive, setIsCodeInputActive] = useState(false);
     const [isSendCodeButtonActive, setIsSendCodeButtonActive] = useState(true);
@@ -28,6 +27,22 @@ function Register() {
         nameInputRef.current.focus();
     }, []);
 
+    const handleEmailBlur = async () => {
+        handleInputBlur(email.value, setEmail, 'email');
+        if (email.value) {
+            try {
+                await api.post(userApis.checkEmail, { email: email.value });
+            } catch (error) {
+                console.log(error);
+                if (error.response.status === 400) {
+                    setEmail((prev) => ({ ...prev, error: 'Email đã tồn tại' }));
+                } else {
+                    setEmail((prev) => ({ ...prev, error: 'Đã xảy ra lỗi khi kiểm tra email' }));
+                }
+            }
+        }
+    };
+
     useEffect(() => {
         if (countdown > 0) {
             timerRef.current = setTimeout(() => setCountdown(countdown - 1), 1000);
@@ -39,17 +54,15 @@ function Register() {
     }, [countdown]);
 
     const handleSendCodeClick = async () => {
-        setIsCodeInputActive(true);
         setIsSendCodeButtonActive(false);
-        setCountdown(120); // Start 120s countdown
+        setIsCodeInputActive(true);
+        setCountdown(60); // Start 60s countdown
         try {
-            const response = await api.post(userApis.verifyEmail, {
-                email: email.value,
-            });
+            const response = await api.post(userApis.verifyEmail, { email: email.value });
             console.log(response.data);
         } catch (error) {
-            // Handle errors here
             console.log(error);
+            setIsSendCodeButtonActive(true);
         }
     };
 
@@ -60,37 +73,35 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true); // Set isSubmitting to true
-
+    
         try {
-            const response = await api.post(userApis.register, {
+            // Đăng ký
+            const registerResponse = await api.post(userApis.register, {
                 name: name.value,
                 email: email.value,
                 password: password.value,
                 otp: otp.value,
             });
-            // Handle successful response here
-            console.log(response.data);
-        } catch (error) {
-            // Handle errors here
-            console.log(error);
-            setIsSubmitting(false); // Set isSubmitting to false if there is an error
-        }
-
-        try {
-            const response = await api.post(userApis.login, {
+            console.log(registerResponse.data);
+    
+            const loginResponse = await api.post(userApis.login, {
                 email: email.value,
                 password: password.value,
             });
-            localStorage.setItem(response.data);
-            console.log(response.data);
-
-            window.location.reload();
+            localStorage.setItem('token', loginResponse.data.token); // Lưu token vào localStorage
+            console.log(loginResponse.data);
+    
+            window.location.reload(); // Tải lại trang để cập nhật trạng thái
         } catch (error) {
-            // Xử lý lỗi ở đây
-            setIsSubmitting(false); // Set isSubmitting to true
             console.log(error);
+            if (error.response.status === 400) {
+                setOtp((prev) => ({ ...prev, error: error.response.data.message }));
+            }
+        } finally {
+            setIsSubmitting(false); // Set isSubmitting to false khi kết thúc
         }
     };
+    
 
     return (
         <form autoComplete="off" onSubmit={handleSubmit}>
@@ -101,7 +112,6 @@ function Register() {
                 <div className={cx('input-wrap', name.error && 'invalid')}>
                     <input
                         ref={nameInputRef}
-                        autoFocus
                         placeholder="Họ và tên của bạn"
                         name="name"
                         value={name.value}
@@ -121,9 +131,10 @@ function Register() {
                     <input
                         placeholder="Email của bạn"
                         name="email"
+                        type="email"
                         value={email.value}
                         onChange={handleChange(setEmail)}
-                        onBlur={() => handleInputBlur(email.value, setEmail)}
+                        onBlur={handleEmailBlur}
                     />
                     {email.error && <ErrorIcon className={cx('error-icon')} />}
                 </div>
@@ -136,9 +147,10 @@ function Register() {
                         placeholder="Password"
                         name="password"
                         type="password"
+                        minLength={6}
                         value={password.value}
                         onChange={handleChange(setPassword)}
-                        onBlur={() => handleInputBlur(password.value, setPassword)}
+                        onBlur={() => handleInputBlur(password.value, setPassword, 'password')}
                     />
                 </div>
                 {password.error && <div className={cx('error-message')}>{password.error}</div>}
@@ -152,12 +164,21 @@ function Register() {
                         name="otp"
                         maxLength={6}
                         value={otp.value}
-                        onChange={(e) => setOtp({ value: e.target.value, error: '' })}
+                        onChange={(e) => {
+                            setOtp({ value: e.target.value, error: '' });
+                        }}
                         onBlur={() => handleInputBlur(otp.value, setOtp)}
                     />
                     <div
                         className={cx('right-btn', {
-                            disabled: !(email.value && password.value && name.value && isSendCodeButtonActive),
+                            disabled:
+                                !email.value ||
+                                !password.value ||
+                                !name.value ||
+                                !isSendCodeButtonActive ||
+                                email.error ||
+                                password.error ||
+                                name.error,
                         })}
                         onClick={handleSendCodeClick}
                     >
@@ -173,13 +194,20 @@ function Register() {
                     type="submit"
                     disabled={isSubmitting || !email.value || !password.value || !otp.value || !name.value}
                     className={cx('submit-btn', {
-                        disabled: isSubmitting || !(email.value && password.value && otp.value && name.value),
+                        disabled:
+                            isSubmitting ||
+                            !(email.value && password.value && otp.value && name.value) ||
+                            email.error ||
+                            password.error ||
+                            name.error ||
+                            otp.error,
+
                         rounded: true,
                         primary: true,
                         loading: isSubmitting,
                     })}
                 >
-                    {isSubmitting ? <Spinner/> : 'Đăng ký'}
+                    {isSubmitting ? <Spinner /> : 'Đăng ký'}
                 </button>
             </InputWrapper>
         </form>

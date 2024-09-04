@@ -1,21 +1,60 @@
-import { useState } from 'react';
 import classNames from 'classnames/bind';
+import { useState, useRef, useEffect } from 'react';
+
 import styles from './ForgotPassword.module.scss';
-import { handleInputBlur } from '~/utils/handleInputBlur';
 import InputWrapper from '~/components/InputWrapper';
+import { handleInputBlur } from '~/utils/handleInputBlur';
 import { ErrorIcon } from '~/components/Icons';
+import api, { userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
 
 const cx = classNames.bind(styles);
 
 function ForgotPassword() {
-    const [email, setEmail] = useState({ value: '', error: '' });
-    const [code, setCode] = useState({ value: '', error: '' });
-    const [isCodeInputActive, setIsCodeInputActive] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false); // State for form submission
+    const [email, setEmail] = useState({ value: 'hadep7a@gmail.com', error: '' });
 
-    const handleSendCodeClick = () => {
+    const [otp, setOtp] = useState({ value: '', error: '' });
+    const [isCodeInputActive, setIsCodeInputActive] = useState(false);
+    const [isSendCodeButtonActive, setIsSendCodeButtonActive] = useState(true);
+    const [countdown, setCountdown] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false); // State for form submission
+    const timerRef = useRef(null);
+
+    const emailInputRef = useRef(null);
+
+    useEffect(() => {
+        emailInputRef.current.focus();
+    }, []);
+
+    useEffect(() => {
+        if (countdown > 0) {
+            timerRef.current = setTimeout(() => setCountdown(countdown - 1), 1000);
+        } else {
+            clearTimeout(timerRef.current);
+            setIsSendCodeButtonActive(true);
+        }
+        return () => clearTimeout(timerRef.current);
+    }, [countdown]);
+
+    const handleSendCodeClick = async () => {
         setIsCodeInputActive(true);
+        setIsSendCodeButtonActive(false);
+        setCountdown(60); // Start 120s countdown
+        try {
+            const response = await api.post(userApis.verifyEmail, {
+                email: email.value,
+            });
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+            if (error.response.status === 400) {
+                setOtp((prev) => ({ ...prev, error: error.response.data.message }));
+            }
+        }
+    };
+
+    const handleChange = (setter) => (e) => {
+        setter({ value: e.target.value, error: '' });
     };
 
     const handleSubmit = async (e) => {
@@ -23,15 +62,30 @@ function ForgotPassword() {
         setIsSubmitting(true); // Set isSubmitting to true
 
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            const response = await api.post(userApis.foro, {
+                email: email.value,
+                otp: otp.value,
+            });
             // Handle successful response here
-            console.log('Password reset successful');
-            setIsSubmitting(false); // Set isSubmitting to false
+            console.log(response.data);
         } catch (error) {
             // Handle errors here
             console.log(error);
-            setIsSubmitting(false); // Set isSubmitting to false
+            setIsSubmitting(false); // Set isSubmitting to false if there is an error
+        }
+
+        try {
+            const response = await api.post(userApis.login, {
+                email: email.value,
+            });
+            localStorage.setItem(response.data);
+            console.log(response.data);
+
+            window.location.reload();
+        } catch (error) {
+            // Xử lý lỗi ở đây
+            setIsSubmitting(false); // Set isSubmitting to true
+            console.log(error);
         }
     };
 
@@ -39,16 +93,17 @@ function ForgotPassword() {
         <form autoComplete="off" onSubmit={handleSubmit}>
             <InputWrapper>
                 <div className={cx('label-group')}>
-                    <label className={cx('label')}>Tên đăng nhập</label>
+                    <label className={cx('label')}>Email của bạn</label>
                 </div>
-                <div className={cx('input-wrap', { invalid: email.error })}>
+                <div className={cx('input-wrap', email.error && 'invalid')}>
                     <input
-                        autoFocus
-                        placeholder="Email hoặc Username"
+                        ref={emailInputRef}
+                        placeholder="Email của bạn"
                         name="email"
+                        type="email"
                         value={email.value}
-                        onChange={(e) => setEmail({ value: e.target.value, error: '' })}
-                        onBlur={() => handleInputBlur(email.value, setEmail)}
+                        onChange={handleChange(setEmail)}
+                        onBlur={() => handleInputBlur(email.value, setEmail, 'email')}
                     />
                     {email.error && <ErrorIcon className={cx('error-icon')} />}
                 </div>
@@ -60,31 +115,37 @@ function ForgotPassword() {
                     <input
                         disabled={!isCodeInputActive}
                         placeholder="Mã xác nhận"
-                        name="code"
+                        name="otp"
                         maxLength={6}
-                        value={code.value}
-                        onChange={(e) => setCode({ value: e.target.value, error: '' })}
-                        onBlur={() => handleInputBlur(code.value, setCode)}
+                        value={otp.value}
+                        onChange={(e) => setOtp({ value: e.target.value, error: '' })}
+                        onBlur={() => handleInputBlur(otp.value, setOtp)}
                     />
-                    <div className={cx('right-btn', { disabled: !email.value })} onClick={handleSendCodeClick}>
-                        <span>Gửi mã</span>
+                    <div
+                        className={cx('right-btn', {
+                            disabled: !(email.value && isSendCodeButtonActive),
+                        })}
+                        onClick={handleSendCodeClick}
+                    >
+                        <span>{countdown > 0 ? `Gửi lại mã (${countdown}s)` : 'Gửi mã'}</span>
                     </div>
                 </div>
-                {code.error && <div className={cx('error-message')}>{code.error}</div>}
+                {otp.error && <div className={cx('error-message')}>{otp.error}</div>}
                 {isCodeInputActive && <div className={cx('helper')}>Đã gửi mã! Kiểm tra email của bạn để lấy mã.</div>}
             </InputWrapper>
 
             <InputWrapper>
                 <button
                     type="submit"
-                    disabled={isSubmitting || !isCodeInputActive || code.value.length !== 6}
+                    disabled={isSubmitting || !email.value || !otp.value}
                     className={cx('submit-btn', {
-                        disabled: isSubmitting || !isCodeInputActive || code.value.length !== 6,
+                        disabled: isSubmitting || !(email.value && otp.value) || email.error || otp.error,
                         rounded: true,
                         primary: true,
+                        loading: isSubmitting,
                     })}
                 >
-                    {isSubmitting ? <Spinner /> : 'Đặt lại mật khẩu'}
+                    {isSubmitting ? <Spinner /> : 'Xác nhận'}
                 </button>
             </InputWrapper>
         </form>

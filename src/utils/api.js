@@ -3,7 +3,7 @@ import axios from 'axios';
 const HOST = 'http://localhost:8080/api';
 
 export const userApis = {
-    login: '/auth/login/',
+    
     currentUser: '/current-user',
     getUserBySlug: (slug) => `/users/${slug}`,
 
@@ -58,8 +58,11 @@ export const userApis = {
     updateComment: (id) => `/comments/${id}`,
     deleteComment: (id) => `/comments/${id}`,
     checkLikedComment: (id) => `/comments/${id}/check-liked`,
+
+    login: '/auth/login/',
+    checkEmail: '/auth/check-email/',
     register: '/auth/register/',
-    verifyEmail: '/verify-email/',
+    verifyEmail: '/auth/verify-email/',
     methodResetPassword: '/forgot-password/',
 
     sendResetPasswordOTP: '/otp/',
@@ -75,6 +78,8 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true,
+
 });
 
 export const authAPI = () => {
@@ -86,20 +91,10 @@ export const authAPI = () => {
         headers: {
             Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
     });
 };
 
-// api.interceptors.request.use(
-//     (config) => {
-//         const token = localStorage.getItem('token');
-//         if (token) {
-//             config.headers.Authorization = `Bearer ${token}`;
-//         }
-//         return config;
-//     },
-//     (error) => {
-//         return Promise.reject(error);
-//     }
-// );
+
 
 export default api;

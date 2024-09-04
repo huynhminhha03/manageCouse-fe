@@ -8,7 +8,6 @@ import RememberLogin from '~/components/RememberLogin';
 import api, { userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
 
-
 const cx = classNames.bind(styles);
 
 function Login() {
@@ -34,7 +33,6 @@ function Login() {
 
             localStorage.setItem('token', response.data.token);
             window.location.reload();
-
         } catch (error) {
             // Xử lý lỗi ở đây
             setIsSubmitting(false); // Set isSubmitting to true
@@ -64,11 +62,12 @@ function Login() {
                 <div className={cx('input-wrap', { invalid: username.error })}>
                     <input
                         autoFocus
-                        placeholder="Email hoặc Username"
+                        placeholder="Nhập email"
                         name="email"
+                        type="email"
                         value={username.value}
                         onChange={handleChange(setUsername)}
-                        onBlur={() => handleInputBlur(username.value, setUsername)}
+                        onBlur={() => handleInputBlur(username.value, setUsername, 'email')}
                         ref={usernameInputRef}
                     />
                     {username.error && <ErrorIcon className={cx('error-icon')} />}
@@ -86,6 +85,7 @@ function Login() {
                         onChange={handleChange(setPassword)}
                         onBlur={() => handleInputBlur(password.value, setPassword)}
                     />
+                    {password.error && <ErrorIcon className={cx('error-icon')} />}
                 </div>
                 {password.error && <div className={cx('error-message')}>{password.error}</div>}
             </InputWrapper>
