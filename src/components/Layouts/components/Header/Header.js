@@ -6,7 +6,6 @@ import HeadlessTippy from '@tippyjs/react/headless';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import { ModalTypeContext } from '~/context/ModalTypeContext';
 import Search from '~/components/Layouts/components/Search';
-import ProgressBar from '~/components/ProgressBar';
 import BackButton from '~/components/BackButton';
 import Avatar from '~/components/Avatar';
 import styles from './Header.module.scss';
@@ -26,6 +25,7 @@ function Header({ transparent, hasBackBtn }) {
 
     const location = useLocation();
     const [modalType, setModalType] = useState(null);
+    const [registerCourse, setRegisterCourses] = useState([]);
     const [showMyCourses, setShowMyCourses] = useState(false);
     const [showNotify, setShowNotify] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
@@ -64,6 +64,16 @@ function Header({ transparent, hasBackBtn }) {
         }
     }, [token, setUser]);
 
+    const handleShowRegisterCourses = async () => {
+        setShowMyCourses(!showMyCourses);
+        try {
+            const response = await authAPI().get(userApis.getRegisterCourses);
+            setRegisterCourses(response.data.courses);
+            console.log(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <ModalTypeContext.Provider value={{ modalType, setModalType }}>
             <header className={cx('wrapper', { transparent })}>
@@ -120,56 +130,33 @@ function Header({ transparent, hasBackBtn }) {
                                                         </Link>
                                                     </div>
                                                     <div className={cx('content')}>
-                                                        <div className={cx('course-item')}>
-                                                            <span>
-                                                                <img
-                                                                    className={cx('course-thumb')}
-                                                                    src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                                                    alt="Node&ExpressJS"
-                                                                />
-                                                            </span>
-                                                            <div className={cx('course-info')}>
-                                                                <h3 className={cx('course-title')}>Node & ExpressJS</h3>
-                                                                <p className={cx('last-completed')}>
-                                                                    Học cách đây 21 ngày trước
-                                                                </p>
-                                                                <ProgressBar />
+                                                        {registerCourse ? (
+                                                            registerCourse.map((course, index) => (
+                                                                <Link
+                                                                    to={`/course/${course.course_id}`}
+                                                                    key={index}
+                                                                    className={cx('course-item')}
+                                                                >
+                                                                    <span>
+                                                                        <img
+                                                                            className={cx('course-thumb')}
+                                                                            src={course?.course_id?.image_url}
+                                                                            alt={course?.course_id?.title}
+                                                                        />
+                                                                    </span>
+                                                                    <div className={cx('course-info')}>
+                                                                        <h3 className={cx('course-title')}>
+                                                                            {course?.course_id?.title}
+                                                                        </h3>
+                                                                    </div>
+                                                                </Link>
+                                                            ))
+                                                        ) : (
+                                                            <div className={cx('no-result')}>
+                                                                {' '}
+                                                                Bạn chưa đăng ký khoá học nào
                                                             </div>
-                                                        </div>
-
-                                                        <div className={cx('course-item')}>
-                                                            <span>
-                                                                <img
-                                                                    className={cx('course-thumb')}
-                                                                    src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                                                    alt="Node&ExpressJS"
-                                                                />
-                                                            </span>
-                                                            <div className={cx('course-info')}>
-                                                                <h3 className={cx('course-title')}>Node & ExpressJS</h3>
-                                                                <p className={cx('last-completed')}>
-                                                                    Học cách đây 21 ngày trước
-                                                                </p>
-                                                                <ProgressBar />
-                                                            </div>
-                                                        </div>
-
-                                                        <div className={cx('course-item')}>
-                                                            <span>
-                                                                <img
-                                                                    className={cx('course-thumb')}
-                                                                    src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                                                    alt="Node&ExpressJS"
-                                                                />
-                                                            </span>
-                                                            <div className={cx('course-info')}>
-                                                                <h3 className={cx('course-title')}>Node & ExpressJS</h3>
-                                                                <p className={cx('last-completed')}>
-                                                                    Học cách đây 21 ngày trước
-                                                                </p>
-                                                                <ProgressBar />
-                                                            </div>
-                                                        </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </PopperWrapper>
@@ -179,7 +166,7 @@ function Header({ transparent, hasBackBtn }) {
                                             className={cx('my-course-btn', {
                                                 actived: config.routes.registeredCourse === location.pathname,
                                             })}
-                                            onClick={() => setShowMyCourses(!showMyCourses)}
+                                            onClick={handleShowRegisterCourses}
                                         >
                                             Khoá học đã đăng ký
                                         </button>
@@ -286,7 +273,7 @@ function Header({ transparent, hasBackBtn }) {
 
                                                 <ul className={cx('list')}>
                                                     <li>
-                                                    <Link
+                                                        <Link
                                                             to={config.routes.myCourse}
                                                             className={cx('item')}
                                                             onClick={() => setShowProfile(false)}
@@ -331,7 +318,9 @@ function Header({ transparent, hasBackBtn }) {
 
                                                 <ul className={cx('list')}>
                                                     <li>
-                                                        <span className={cx('item')}>Cài đặt</span>
+                                                        <Link to={'/settings'}>
+                                                            <span className={cx('item')}>Cài đặt</span>
+                                                        </Link>
                                                     </li>
                                                     <li>
                                                         <span className={cx('item')} onClick={handleLogout}>

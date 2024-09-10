@@ -79,6 +79,11 @@
     cursor: pointer;
 }
 
+.body {
+    max-height: 80vh;  // Chiều cao tối đa của form
+    overflow-y: auto;  // Bật cuộn dọc khi vượt quá chiều cao
+    padding: 28px;     // Tạo không gian bên trong form
+}
 // Content.js
 .container {
     max-height: 80vh;
@@ -161,6 +166,21 @@
     opacity: .7;
 }
 
+.message {
+    max-width: 360px;
+    margin: 20px auto 0;
+    padding: 10px;
+    border-radius: 10px;
+    color: #fff;
+    background: #68c87ee6;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.5;
+
+    svg {
+        margin-right: 5px;
+    }
+}
 .main {
     margin-top: 12px;
 }

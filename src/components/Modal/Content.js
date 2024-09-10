@@ -5,12 +5,13 @@ import classNames from 'classnames/bind';
 import styles from './Modal.module.scss';
 import routes from '~/config/routes';
 import images from '~/assets/images';
-import { FacebookIcon, GithubIcon, GoogleIcon, PrevArrowIcon, UserIcon } from '~/components/Icons';
+import { FacebookIcon, GithubIcon, GoogleIcon, PrevArrowIcon, TickIcon, UserIcon } from '~/components/Icons';
 import config from '~/config';
 import { toCamelCase } from '~/utils/toCamelCase';
 import ForgotPassword from './ForgotPassword';
 import Login from './Login';
 import Register from './Register';
+import ResetPassword from './ResetPassword';
 
 const cx = classNames.bind(styles);
 
@@ -63,12 +64,15 @@ const RegisterIcons = [
 function Content() {
     const { modalType, setModalType } = useContext(ModalTypeContext);
     const [previousModalType, setPreviousModalType] = useState(null);
-
+    console.log(modalType);
     const icons = modalType === 'register' ? RegisterIcons : LoginIcons;
+
+    const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
 
     const handleClick = (to) => {
         const camelCaseScreen = toCamelCase(to);
         console.log(camelCaseScreen);
+        console.log(to);
         setPreviousModalType(modalType);
         setModalType(camelCaseScreen);
     };
@@ -86,19 +90,32 @@ function Content() {
                 <a href={routes.home}>
                     <img className={cx('logo')} src={images.logo} alt="Yuko_logo" />
                 </a>
-
                 <h1 className={cx('heading')}>
                     {modalType.includes('register')
                         ? 'Đăng ký tài khoản Yuko'
                         : modalType.includes('login')
                           ? 'Đăng nhập tài khoản Yuko'
-                          : 'Quên mật khẩu?'}
+                          : modalType === 'forgotPassword'
+                            ? 'Quên mật khẩu?'
+                            : 'Đặt lại mật khẩu'}
                 </h1>
-                <p className={cx(modalType !== 'forgotPassword' ? "warn" : "description")}>
-                    {modalType !== 'forgotPassword'
-                        ? 'Mỗi người nên sử dụng riêng một tài khoản, tài khoản nhiều người sử dụng chung sẽ bị khóa.'
-                        : 'Nhập email hoặc username của bạn và chúng tôi sẽ gửi cho bạn mã khôi phục mật khẩu.'}
+                <p
+                    className={cx(
+                        modalType !== 'forgotPassword' && modalType !== 'resetPassword' ? 'warn' : 'description',
+                    )}
+                >
+                    {modalType === 'forgotPassword'
+                        ? 'Nhập email của bạn và chúng tôi sẽ gửi cho bạn mã khôi phục mật khẩu.'
+                        : modalType === 'resetPassword'
+                          ? 'Đặt mật khẩu mới cho tài khoản của bạn để có thể tiếp tục truy cập các khóa học.'
+                          : 'Mỗi người nên sử dụng riêng một tài khoản, tài khoản nhiều người sử dụng chung sẽ bị khóa.'}
                 </p>
+                {resetPasswordSuccess && modalType === 'loginEmail' && (
+                    <p className={cx('message')}>
+                        <TickIcon />
+                        Mật khẩu đã được đặt lại. Vui lòng đăng nhập.
+                    </p>
+                )}
                 {previousModalType && (
                     <button className={cx('back-btn')} onClick={handleBackClick}>
                         <PrevArrowIcon />
@@ -121,12 +138,13 @@ function Content() {
                         <Login />
                     ) : modalType === 'registerEmail' ? (
                         <Register />
+                    ) : modalType === 'forgotPassword' ? (
+                        <ForgotPassword setModalType={setModalType} />
                     ) : (
-                        <ForgotPassword />
-
+                        <ResetPassword setModalType={setModalType} setResetPasswordSuccess={setResetPasswordSuccess} />
                     )}
 
-                    {modalType !== 'forgotPassword' && (
+                    {modalType !== 'forgotPassword' && modalType !== 'resetPassword' && (
                         <p className={cx('register-or-login')}>
                             {modalType === 'register' ? 'Bạn đã có tài khoản?' : 'Bạn chưa có tài khoản?'}{' '}
                             <span onClick={() => setModalType(modalType === 'register' ? 'login' : 'register')}>
@@ -135,7 +153,7 @@ function Content() {
                         </p>
                     )}
 
-                    {modalType !== 'forgotPassword' && (
+                    {modalType !== 'forgotPassword' && modalType !== 'resetPassword' && (
                         <span className={cx('forgot-password')} onClick={() => handleClick('forgotPassword')}>
                             Quên mật khẩu?
                         </span>

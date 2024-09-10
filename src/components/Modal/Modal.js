@@ -5,14 +5,14 @@ import Content from './Content';
 
 const cx = classNames.bind(styles);
 
-function Modal({ onClose }) {
+function Modal({ onClose, isSetting, children }) {
     const [isClosing, setIsClosing] = useState(false);
 
     const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
             onClose();
-        }, 300); 
+        }, 300);
     }, [onClose]);
 
     useEffect(() => {
@@ -34,8 +34,11 @@ function Modal({ onClose }) {
         <div className={cx('wrapper')}>
             <div className={cx('overlay', { closing: isClosing })} onClick={handleClose}></div>
             <div className={cx('content', { closing: isClosing })}>
-                <button className={cx('close')} onClick={handleClose}>x</button>
-                : <Content closingModal={handleClose}/>
+                <button className={cx('close')} onClick={handleClose}>
+                    x
+                </button>
+
+                {isSetting ? <div className={cx('body')}>{children}</div> : <Content closingModal={handleClose} />}
             </div>
         </div>
     );

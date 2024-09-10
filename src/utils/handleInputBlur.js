@@ -1,4 +1,10 @@
 export const handleInputBlur = (value, setter, type) => {
+
+    if (!value && type==="currentPassword") {
+        setter((prev) => ({ ...prev, error: 'Vui lòng nhập mật khẩu hiện tại' }));
+        return;
+    }
+
     if (!value) {
         setter((prev) => ({ ...prev, error: 'Trường này không được để trống' }));
         return;

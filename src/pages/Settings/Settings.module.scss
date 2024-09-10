@@ -1,0 +1,350 @@
+/* Settings.module.scss */
+
+.wrapper {
+    padding: 20px;
+}
+
+.sidebar {
+    background: #f8f9fa;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+
+    a {
+        display: block;
+        margin-bottom: 16px;
+        margin-left: 8px;
+
+        img {
+            height: 48px;
+            border-radius: 24px;
+        }
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 4px;
+
+            &:hover {
+                background: #e9ecef;
+            }
+
+            &.active {
+                background: #007bff;
+                color: white;
+            }
+        }
+    }
+}
+
+.content {
+    padding: 20px;
+
+    .section {
+        margin-bottom: 20px;
+
+        .heading {
+            display: flex;
+            align-items: center;
+
+            .close {
+                position: absolute;
+                top: 16px;
+                right: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                background: #0000001a;
+                font-size: 2.8rem;
+                line-height: 0;
+                cursor: pointer;
+            }
+
+            h2 {
+                margin-right: 20px;
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .info-group {
+            margin-bottom: 10px;
+
+            label {
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            p {
+                margin: 0;
+            }
+        }
+
+        .back-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 16px;
+            transition: background 0.3s ease;
+
+            &:hover {
+                background: #0056b3;
+            }
+        }
+    }
+}
+
+.btn-wrapper {
+    margin-top: 28px;
+    margin-left: 28px;
+
+    .edit-btn {
+        padding: 8px;
+        background-color: var(--comment-primary-button-bg);
+        color: var(--white-color);
+        border-radius: 8px;
+    }
+}
+
+.change-pw-btn {
+    background: #f8f9fa;
+    cursor: pointer;
+    padding: 8px 12px;
+
+    &:hover {
+        opacity: 0.9;
+    }
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.desc {
+    display: block;
+    margin: 8px 0;
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+//ChangePassword scss
+
+.form-container {
+    max-height: 80vh; 
+    overflow-y: auto;  
+    padding: 20px;    
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(0);
+    }
+    25% {
+        transform: translate(-8px);
+    }
+    50% {
+        transform: translate(8px);
+    }
+    75% {
+        transform: translate(-8px);
+    }
+    100% {
+        transform: translate(0);
+    }
+}
+
+.label-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.label {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 10px 0 10px 8px;
+    display: block;
+}
+
+.label.right {
+    cursor: pointer;
+    font-weight: 500;
+    opacity: 0.7;
+    font-size: 1.3rem;
+    text-decoration: underline;
+}
+
+.desc {
+    width: 100%;
+}
+
+.input-wrap {
+    position: relative;
+    background: #fff;
+    border: 1.5px solid var(--divider-color);
+    border-radius: 44px;
+    overflow: hidden;
+    height: 44px;
+    display: flex;
+
+    &:focus-within {
+        border-color: var(--button-color);
+    }
+
+    input {
+        display: block;
+        width: 100%;
+        padding: 12px 42px 12px 20px;
+        border: none;
+        outline: none;
+        font-size: 1.4rem;
+        background-color: transparent;
+    }
+}
+
+.input-wrap.invalid {
+    border-color: var(--invalid-color);
+    background-color: #ff00001a;
+}
+.input-wrap.disabled {
+    background: #16182329;
+}
+
+.right-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 140px;
+    margin: 1px;
+    border-radius: 44px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.right-btn.disabled {
+    color: #757575;
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.right-btn:not(.disabled) {
+    color: #fff;
+    background: linear-gradient(to right bottom, #ff8f26, var(--primary-color));
+
+    &:hover {
+        cursor: pointer;
+        opacity: 0.9;
+    }
+}
+
+.error-icon {
+    color: var(--invalid-color);
+    animation: shake 0.5s ease-in-out;
+
+    position: absolute;
+    top: 50%;
+    right: 18px;
+    translate: 0 -50%;
+}
+
+.error-message,
+.helper {
+    margin: 8px 0 8px 8px;
+    color: var(--invalid-color);
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.helper {
+    color: #02875a;
+    font-style: italic;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px 20px;
+    border: 1px solid var(--divider-color);
+    font-weight: 500;
+    line-height: 1.6rem;
+    font-size: 1.6rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: opacity 0.25s;
+}
+
+.submit-btn.loading {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+.submit-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.submit-btn.rounded {
+    border-radius: 999px;
+}
+
+.submit-btn.primary {
+    color: #fff;
+    background-color: var(--button-color);
+    background-image: var(--button-image);
+    border: none;
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left-color: #09f;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-top: 10px;
+}
+
+.img-wrapper {
+    display: flex;
+    justify-content: center;
+}

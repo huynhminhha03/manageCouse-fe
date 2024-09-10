@@ -35,7 +35,7 @@ function Home() {
                             courses?.proCourses.map((proCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        id={proCourse._id}
+                                        id={proCourse?._id}
                                         src={proCourse?.image_url}
                                         title={proCourse?.title}
                                         desc={proCourse?.desc}
@@ -56,7 +56,7 @@ function Home() {
                             courses?.freeCourses.map((freeCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        id={freeCourse._id}
+                                        id={freeCourse?._id}
                                         src={freeCourse?.image_url}
                                         title={freeCourse?.title}
                                         desc={freeCourse?.desc}

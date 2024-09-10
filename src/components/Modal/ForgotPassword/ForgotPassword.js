@@ -10,7 +10,7 @@ import Spinner from '~/components/Spinner';
 
 const cx = classNames.bind(styles);
 
-function ForgotPassword() {
+function ForgotPassword({ setModalType }) {
     const [email, setEmail] = useState({ value: 'hadep7a@gmail.com', error: '' });
 
     const [otp, setOtp] = useState({ value: '', error: '' });
@@ -41,15 +41,14 @@ function ForgotPassword() {
         setIsSendCodeButtonActive(false);
         setCountdown(60); // Start 120s countdown
         try {
-            const response = await api.post(userApis.verifyEmail, {
+            const response = await api.post(userApis.sendOTP, {
                 email: email.value,
             });
             console.log(response.data);
         } catch (error) {
             console.log(error);
-            if (error.response.status === 400) {
-                setOtp((prev) => ({ ...prev, error: error.response.data.message }));
-            }
+
+            setIsSendCodeButtonActive(true);
         }
     };
 
@@ -62,30 +61,18 @@ function ForgotPassword() {
         setIsSubmitting(true); // Set isSubmitting to true
 
         try {
-            const response = await api.post(userApis.foro, {
+            await api.post(userApis.verifyOTP, {
                 email: email.value,
                 otp: otp.value,
             });
-            // Handle successful response here
-            console.log(response.data);
-        } catch (error) {
-            // Handle errors here
-            console.log(error);
-            setIsSubmitting(false); // Set isSubmitting to false if there is an error
-        }
 
-        try {
-            const response = await api.post(userApis.login, {
-                email: email.value,
-            });
-            localStorage.setItem(response.data);
-            console.log(response.data);
-
-            window.location.reload();
+            setModalType('resetPassword');
         } catch (error) {
-            // Xử lý lỗi ở đây
-            setIsSubmitting(false); // Set isSubmitting to true
             console.log(error);
+            if (error.response.status === 400) {
+                setOtp((prev) => ({ ...prev, error: error.response.data.message }));
+            }
+            setIsSubmitting(false);
         }
     };
 
@@ -123,7 +110,7 @@ function ForgotPassword() {
                     />
                     <div
                         className={cx('right-btn', {
-                            disabled: !(email.value && isSendCodeButtonActive),
+                            disabled: !(email.value && isSendCodeButtonActive) || email.error,
                         })}
                         onClick={handleSendCodeClick}
                     >

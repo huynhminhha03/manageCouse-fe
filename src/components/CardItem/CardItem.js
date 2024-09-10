@@ -6,34 +6,38 @@ import images from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function CardItem(data) {
-    const course_id = data.isMyCourse ? `/my-course/${data.id}`: `/course/${data.id}`;
+function CardItem({ isRegisterCourse, id, src, title, desc, isMyCourse, isFree, price, name, avatar }) {
 
+    const courseLink = isMyCourse ? `/my-course/${id}` : `/course/${id}`;
     return (
         <div className={cx('wrapper')}>
-            <Link to={course_id} className={cx('link')}>
-                <img className={cx('thumb')} src={data.src} alt={data.title} />
+            <Link to={courseLink} className={cx('link')}>
+                <img className={cx('thumb')} src={src} alt={title} />
             </Link>
+
             <div className={cx('content')}>
                 <h3 className={cx('title')}>
-                    <Link to={course_id}>{data.title}</Link>
+                    <Link to={courseLink}>{title}</Link>
                 </h3>
-                <p className={cx('desc')}>{data.desc}</p>
-                {!data.isMyCourse && (
+
+                <p className={cx('desc')}>{desc}</p>
+
+                {!isMyCourse && !isRegisterCourse && (
                     <>
                         <div className={cx('price')}>
-                            <span className={cx('main-price')}>{!data.isFree ? `${data.price}đ` : 'Miễn phí'}</span>
+                            <span className={cx('main-price')}>{!isFree ? `${price}đ` : 'Miễn phí'}</span>
                         </div>
 
+                        {/* Teacher Info */}
                         <div className={cx('more-info')}>
-                            <div className={cx('info-item')} title={`Teacher: ${data.name}`}>
+                            <div className={cx('info-item')} title={`Teacher: ${name}`}>
                                 <div className={cx('avatar')}>
-                                    <img src={data.avatar || images.defaultAvatar} alt={data.name} />
+                                    <img src={avatar || images.defaultAvatar} alt={name} />
                                 </div>
-                                <span>{data.name}</span>
+                                <span>{name}</span>
                             </div>
                         </div>
-                    </> 
+                    </>
                 )}
             </div>
         </div>

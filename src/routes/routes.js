@@ -18,18 +18,26 @@ import SearchResults from '~/pages/SearchResults';
 import MyCourseDetails from '~/pages/MyCourseDetails';
 import CreateLesson from '~/pages/CreateLesson';
 import MyLessonDetails from '~/pages/MyLessonDetails';
+import Payment from '~/pages/Payment';
+import ViewLessons from '~/pages/ViewLessons';
+import NotFound from '~/pages/NotFound';
+import Settings from '~/pages/Settings';
 
 const publicRoutes = [
     { path: '/', component: Home },
+    { path: '/course/:course_id', component: CourseDetails, layout: WithoutSidebar  },
+    { path: '/settings', component: Settings, layout: null  },
+    { path: '/course/:course_id/lesson/:lesson_id', component: ViewLessons , layout: null},
+    { path: '/course/:course_id/lesson', component: ViewLessons , layout: null},
+    { path: '/order/vnpay_return', component: Payment , layout: WithoutSidebar},
     { path: '/blog', component: Blog },
     { path: '/blog/topic/:slug', component: Blog },
     { path: '/blog/:id', component: BlogDetails, layout: WithoutSidebar },
     { path: '/me/bookmark', component: Bookmark },
     { path: '/new-post', component: CreateBlog, layout: WithoutSidebar },
     { path: '/me/posts', component: MyBlog },
-    { path: '/posts/:id/edit', component: CreateBlog },
+    { path: '/posts/:id/edit', component: CreateBlog, layout: WithoutSidebar  },
     { path: '/roadmap', component: Roadmap },
-    { path: '/course/:course_id', component: CourseDetails },
     { path: '/course/:course_id/edit', component: CreateCourse, layout: WithoutSidebar },
     { path: '/course/results', component: SearchResults },
     { path: '/my-course/:course_id', component: MyCourseDetails, layout: WithoutSidebar },
@@ -39,7 +47,9 @@ const publicRoutes = [
     { path: '/my-course', component: MyCourse },
     { path: '/new-course', component: CreateCourse, layout: WithoutSidebar },
     { path: '/registered-course', component: RegisterCourse },
+    { path: '/404', component: NotFound, layout: null },
     { path: '/:slug', component: Profile, layout: WithoutSidebar },
+    { path: '*', component: NotFound, layout: null },
 ];
 
 const privateRoutes = [];

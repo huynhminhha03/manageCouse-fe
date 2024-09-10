@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import classNames from 'classnames/bind';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import styles from './BlogDetails.module.scss';
 import config from '~/config';
@@ -28,6 +28,8 @@ function BlogDetails() {
     const { id } = useParams(); // Lấy blogId từ URL
     const [blogId, setBlogId] = useState(id);
 
+    const navigate = useNavigate();
+
     const {user} = useContext(UserContext);
 
     useEffect(() => {
@@ -45,12 +47,14 @@ function BlogDetails() {
                     setActivedBookmark(bookmarkResponse.data.bookmarked);
                 } catch (error) {
                     console.log(error);
+                    navigate('/404');
+
                 }
             };
 
             fetchData();
         }
-    }, [blogId, user]);
+    }, [blogId, user, navigate]);
 
     const handleClickCommentBtn = () => {
         setShowComment(true);

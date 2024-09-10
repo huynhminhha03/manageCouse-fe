@@ -36,8 +36,6 @@ function Register() {
                 console.log(error);
                 if (error.response.status === 400) {
                     setEmail((prev) => ({ ...prev, error: 'Email đã tồn tại' }));
-                } else {
-                    setEmail((prev) => ({ ...prev, error: 'Đã xảy ra lỗi khi kiểm tra email' }));
                 }
             }
         }
@@ -73,7 +71,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true); // Set isSubmitting to true
-    
+
         try {
             // Đăng ký
             const registerResponse = await api.post(userApis.register, {
@@ -83,14 +81,14 @@ function Register() {
                 otp: otp.value,
             });
             console.log(registerResponse.data);
-    
+
             const loginResponse = await api.post(userApis.login, {
                 email: email.value,
                 password: password.value,
             });
             localStorage.setItem('token', loginResponse.data.token); // Lưu token vào localStorage
             console.log(loginResponse.data);
-    
+
             window.location.reload(); // Tải lại trang để cập nhật trạng thái
         } catch (error) {
             console.log(error);
@@ -101,7 +99,6 @@ function Register() {
             setIsSubmitting(false); // Set isSubmitting to false khi kết thúc
         }
     };
-    
 
     return (
         <form autoComplete="off" onSubmit={handleSubmit}>

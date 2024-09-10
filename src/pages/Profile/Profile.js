@@ -2,28 +2,52 @@ import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import styles from './Profile.module.scss';
 import { ParticipationIcon } from '~/components/Icons';
-import { authAPI, userApis } from '~/utils/api';
+import api, { userApis } from '~/utils/api';
 import { calculateTimeSinceCreation } from '~/utils/calculateTimeSinceCreation';
-import { useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
+
 function Profile() {
     const { slug } = useParams();
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+    const [registerCourse, setRegisterCourses] = useState([]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
-                const response = await authAPI().get(userApis.getUserBySlug(slug));
-                setUserData(response.data);
-                console.log('user-data ', response.data);
+                const [userResponse, coursesResponse] = await Promise.all([
+                    api.get(userApis.getUserBySlug(slug)),
+                    api.get(userApis.showRegisterCourses(slug))
+                ]);
+                
+                setUserData(userResponse.data);
+                setRegisterCourses(coursesResponse.data.courses);
+                
+                console.log('user-data', userResponse.data);
+                console.log('courses-data', coursesResponse.data);
             } catch (error) {
-                // Xử lý lỗi ở đây
                 console.log(error);
+                navigate('/404');
+            } finally {
+                setLoading(false);
             }
         };
-        fetchUserData();
-    }, [slug]);
+    
+        fetchData();
+    }, [slug, navigate]);
+    
+
+    if (loading) {
+        return <div>Đang tải...</div>;
+    }
+
+    
+
     return (
         <div className={cx('page-wrapper')}>
             <div className={cx('banner')}>
@@ -31,13 +55,13 @@ function Profile() {
                     <div className={cx('user-avatar')}>
                         <div className={cx('avatar')}>
                             <img
-                                src={userData?.avatar || 'https://fullstack.edu.vn/assets/fallback-avatar-BFb1fhaR.jpg'}
-                                alt="Hà Huỳnh Minh"
+                                src={userData.avatar || 'https://fullstack.edu.vn/assets/fallback-avatar-BFb1fhaR.jpg'}
+                                alt={userData.name || 'Avatar'}
                             />
                         </div>
                     </div>
                     <div className={cx('user-name')}>
-                        <span>{userData?.name}</span>
+                        <span>{userData.name}</span>
                     </div>
                 </div>
             </div>
@@ -48,12 +72,12 @@ function Profile() {
                         <div className={cx('wrapper')}>
                             <h4 className={cx('title')}>Giới thiệu</h4>
                             <div className={cx('bio')}>
-                                <span>{userData?.desc}</span>
+                                <span>{userData.desc}</span>
                             </div>
                             <div className={cx('participation')}>
                                 <ParticipationIcon className={cx('participation-icon')} />
                                 <span>
-                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ {calculateTimeSinceCreation(userData?.createdAt)}
+                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ {calculateTimeSinceCreation(userData.createdAt)}
                                 </span>
                             </div>
                         </div>
@@ -69,65 +93,24 @@ function Profile() {
                         <h4 className={cx('title')}>Các khóa học đã tham gia</h4>
 
                         <div>
-                            <div className={cx('inner')}>
-                                <a className={cx('thumb')} href="/courses/nodejs">
-                                    <img
-                                        src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                        className={cx('thumb-img')}
-                                        alt="Node &amp; ExpressJS"
-                                    />
-                                </a>
+                            {registerCourse && registerCourse.map((course) => (
+                                <div className={cx('inner')} key={course?.course_id?._id}>
+                                    <Link className={cx('thumb')} to={`/course/${course?.course_id?._id}`}>
+                                        <img
+                                            src={course?.course_id?.image_url}
+                                            className={cx('thumb-img')}
+                                            alt={course?.course_id?.title}
+                                        />
+                                    </Link>
 
-                                <div className={cx('info')}>
-                                    <h3 className={cx('info-title')}>
-                                        <a href="/courses/nodejs">Node &amp; ExpressJS</a>
-                                    </h3>
-                                    <p className={cx('info-desc')}>
-                                        Học Back-end với Node &amp; ExpressJS framework, hiểu các khái niệm khi làm
-                                        Back-end và xây dựng RESTful API cho trang web.
-                                    </p>
+                                    <div className={cx('info')}>
+                                        <h3 className={cx('info-title')}>
+                                            <Link to={`/course/${course?.course_id?._id}`}>{course?.course_id?.title}</Link>
+                                        </h3>
+                                        <p className={cx('info-desc')}>{course?.course_id?.desc}</p>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div className={cx('inner')}>
-                                <a className={cx('thumb')} href="/courses/nodejs">
-                                    <img
-                                        src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                        className={cx('thumb-img')}
-                                        alt="Node &amp; ExpressJS"
-                                    />
-                                </a>
-
-                                <div className={cx('info')}>
-                                    <h3 className={cx('info-title')}>
-                                        <a href="/courses/nodejs">Node &amp; ExpressJS</a>
-                                    </h3>
-                                    <p className={cx('info-desc')}>
-                                        Học Back-end với Node &amp; ExpressJS framework, hiểu các khái niệm khi làm
-                                        Back-end và xây dựng RESTful API cho trang web.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className={cx('inner')}>
-                                <a className={cx('thumb')} href="/courses/nodejs">
-                                    <img
-                                        src="https://files.fullstack.edu.vn/f8-prod/courses/6.png"
-                                        className={cx('thumb-img')}
-                                        alt="Node &amp; ExpressJS"
-                                    />
-                                </a>
-
-                                <div className={cx('info')}>
-                                    <h3 className={cx('info-title')}>
-                                        <a href="/courses/nodejs">Node &amp; ExpressJS</a>
-                                    </h3>
-                                    <p className={cx('info-desc')}>
-                                        Học Back-end với Node &amp; ExpressJS framework, hiểu các khái niệm khi làm
-                                        Back-end và xây dựng RESTful API cho trang web.
-                                    </p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -29,11 +29,13 @@ function MyCourseDetails() {
                 setLessons(lessonsResponse.data);
             } catch (error) {
                 console.error('Failed to fetch course data:', error);
+                navigate('/404');
+
             }
         };
 
         fetchCourse();
-    }, [course_id]);
+    }, [course_id, navigate]);
 
     const handleEdit = () => {
         // Điều hướng đến trang chỉnh sửa khóa học

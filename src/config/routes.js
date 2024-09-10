@@ -5,7 +5,7 @@ const routes = {
     profile:(slug) => `/${slug}`,
     upload: '/upload',
     search: '/search',
-
+    createPayment: (course_id) => `/payment/${course_id}`,
     courseDetails: (course_id) => `course/${course_id}`,
 
 

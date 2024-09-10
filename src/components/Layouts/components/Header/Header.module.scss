@@ -24,6 +24,7 @@
     border-bottom: none;
 }
 
+
 .inner {
     height: var(--header-height);
     display: flex;
@@ -84,7 +85,6 @@
 }
 
 .wrap-popper {
-    
     background: var(--white-color);
     box-shadow: 0 -4px 32px #0003;
     transition: all ease-in-out 0.3s;
@@ -127,7 +127,8 @@
     overscroll-behavior: contain;
 }
 
-.course-item {
+.course-item,
+.no-result {
     display: flex;
     margin: 0 8px;
     padding: 8px 12px;
@@ -141,12 +142,13 @@
 
 .course-thumb {
     width: 120px;
-    min-height: 67px;
+    height: 67px;
     display: block;
     border-radius: 8px;
     background-color: #ebebeb;
     text-align: center;
     line-height: 67px;
+    object-fit: cover;
 }
 
 .course-info {
@@ -155,8 +157,10 @@
 }
 
 .course-title {
+    margin-top: 12px;
     font-size: 1.4rem;
     margin: 6px 0 0;
+    color:#000;
 }
 
 .last-completed {
@@ -297,6 +301,10 @@
 .list {
     padding-left: 0;
     margin: 0;
+
+    max-height: 68vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 
     .item {
         font-size: 1.4rem;

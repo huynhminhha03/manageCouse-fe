@@ -5,23 +5,27 @@ import CardItem from '~/components/CardItem';
 import AddCard from '~/components/AddCard';
 import config from '~/config';
 import { authAPI, userApis } from '~/utils/api';
+import { useNavigate } from 'react-router-dom';
 
 function MyCourse() {
     const [myCourses, setMyCourses] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
+       
         const fetchMyCourses = async () => {
             try {
                 const response = await authAPI().get(userApis.getMyCourses);
                 setMyCourses(response.data);
             } catch (error) {
-                // Xử lý lỗi ở đây
                 console.log(error);
+                navigate('/404');
+
             }
         };
         fetchMyCourses();
-    }, []);
+    }, [navigate]);
 
     return (
         <MainContent

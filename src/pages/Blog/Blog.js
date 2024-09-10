@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useCallback, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useParams, useLocation } from 'react-router-dom';
 
 import styles from './Blog.module.scss';
@@ -28,6 +28,7 @@ function Blog() {
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true); // Trạng thái tải dữ liệu
 
+    const navigate = useNavigate();
     const handlePageClick = (pageNumber) => {
         setActivePage(pageNumber);
         if (!slug) {
@@ -45,32 +46,35 @@ function Blog() {
         setActivePage(1); // Reset page về 1 khi đổi chủ đề
     };
 
-    // Hàm fetch data blogs
-    const fetchDataBlogs = async (page, slug) => {
-        try {
-            let response;
-            if (!slug) {
-                response = await authAPI().get(userApis.getAllBlogs, {
-                    params: { page },
-                });
-            } else {
-                response = await authAPI().get(userApis.getBlogsByTopic(slug), {
-                    params: { page },
-                });
+    const fetchDataBlogs = useCallback(
+        async (page, slug) => {
+            try {
+                let response;
+                if (!slug) {
+                    response = await authAPI().get(userApis.getAllBlogs, {
+                        params: { page },
+                    });
+                } else {
+                    response = await authAPI().get(userApis.getBlogsByTopic(slug), {
+                        params: { page },
+                    });
+                }
+                setDataBlogs(response.data.data);
+                setTotalPages(Math.ceil(response.data.total / response.data.limit));
+                setIsLoading(false); // Dữ liệu đã được tải xong
+            } catch (error) {
+                console.log(error);
+                setIsLoading(false);
+                navigate('/404');
+
             }
-            setDataBlogs(response.data.data);
-            setTotalPages(Math.ceil(response.data.total / response.data.limit));
-            setIsLoading(false); // Dữ liệu đã được tải xong
-        } catch (error) {
-            // Xử lý lỗi ở đây
-            console.log(error);
-            setIsLoading(false); // Dữ liệu đã được tải xong dù có lỗi
-        }
-    };
+        },
+        [navigate],
+    );
 
     useEffect(() => {
         fetchDataBlogs(activePage, slug);
-    }, [activePage, slug]);
+    }, [activePage, slug, fetchDataBlogs]);
 
     return (
         <MainContent
@@ -124,7 +128,9 @@ function Blog() {
                                             ))}
                                             <div
                                                 className={cx('page', { disabled: activePage === totalPages })}
-                                                onClick={() => activePage < totalPages && handlePageClick(activePage + 1)}
+                                                onClick={() =>
+                                                    activePage < totalPages && handlePageClick(activePage + 1)
+                                                }
                                             >
                                                 <NextPageIcon />
                                             </div>
@@ -132,7 +138,7 @@ function Blog() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className={cx('no-results')}>
+                                <div className={cx('no-result')}>
                                     Hiện chưa có bài viết về chủ đề này.
                                     <Link to={config.routes.createBlog}> Tạo bài mới ngay!</Link>
                                 </div>

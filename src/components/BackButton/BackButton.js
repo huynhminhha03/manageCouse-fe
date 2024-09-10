@@ -7,7 +7,7 @@ import { PrevArrowIcon } from '~/components/Icons';
 const cx = classNames.bind(styles);
 
 function BackButton() {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
     function handleClick() {
         navigate(-1);

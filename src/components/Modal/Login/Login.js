@@ -39,13 +39,10 @@ function Login() {
             if (error.response && error.response.data) {
                 const { message } = error.response.data;
                 // Xử lý lỗi và hiển thị thông báo tương ứng
-                setUsername((prevState) => ({
-                    ...prevState,
-                    error: message.includes('email') ? message : '',
-                }));
+                
                 setPassword((prevState) => ({
                     ...prevState,
-                    error: message.includes('password') ? message : '',
+                    error: message,
                 }));
             } else {
                 console.log('Unexpected error: ', error);

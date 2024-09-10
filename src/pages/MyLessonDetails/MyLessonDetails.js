@@ -23,11 +23,13 @@ function MyLessonDetails() {
                 setLesson(response.data);
             } catch (error) {
                 console.error('Failed to fetch lesson data:', error);
+                navigate('/404');
+
             }
         };
 
         fetchCourse();
-    }, [course_id, lesson_id]);
+    }, [course_id, lesson_id, navigate]);
 
     const handleEdit = () => {
         navigate(`/course/${course_id}/lesson/${lesson_id}/edit`);
@@ -36,9 +38,11 @@ function MyLessonDetails() {
     const handleDelete = async () => {
         try {
             await authAPI().delete(userApis.deleteLesson(course_id, lesson_id));
-            navigate(`my-course/${course_id}`, { replace: true });
+            navigate(`/my-course/${course_id}`, { replace: true });
         } catch (error) {
             console.error('Failed to delete lesson:', error);
+            navigate('/404');
+
         }
     };
 

@@ -4,6 +4,10 @@ const HOST = 'http://localhost:8080/api';
 
 export const userApis = {
     
+    getCurrentUser: '/current-user',
+    updateCurrentUser: '/current-user',
+    getReturnUrl: '/vnpay_return',
+    createPayment: '/create_payment_url',
     currentUser: '/current-user',
     getUserBySlug: (slug) => `/users/${slug}`,
 
@@ -12,19 +16,25 @@ export const userApis = {
     getCourseDetails: (course_id) =>  `/courses/${course_id}`,
     getQuickViewLessons: (course_id) =>  `/courses/${course_id}/lessons/quick-view`,
     getLesson: (course_id, lesson_id) =>  `/courses/${course_id}/lessons/${lesson_id}`,
+    getAllLesson: (course_id) =>  `/courses/${course_id}/lessons`,
 
     getMyCourses: '/my-courses',
+    getRegisterCourses: '/registered-courses',
+    showRegisterCourses: (slug) => `${slug}/registered-courses/show`,
     getMyCourseDetails: (course_id) =>  `/my-courses/${course_id}`,
     createCourse: '/my-courses',
     updateCourse: (course_id) =>  `/my-courses/${course_id}`,
     deleteCourse: (course_id) =>  `/my-courses/${course_id}`,
-
+    
     getLessonsByCourseId: (course_id) =>  `/my-courses/${course_id}/lessons`,
     getLessonById: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
     createLesson: (course_id) =>  `/my-courses/${course_id}/lessons`,
     updateLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
     deleteLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
 
+    registerCourse: (course_id) => `/courses/${course_id}/register`,
+    checkRegisterCourse: (course_id) =>  `/courses/${course_id}/register/checked`,
+    
     createBlog: '/my-blogs',
     getMyBlogs: '/my-blogs',
     getMyBlogById: (id) => `/my-blogs/${id}`,
@@ -63,12 +73,11 @@ export const userApis = {
     checkEmail: '/auth/check-email/',
     register: '/auth/register/',
     verifyEmail: '/auth/verify-email/',
-    methodResetPassword: '/forgot-password/',
+    sendOTP: '/auth/forgot-password/',
 
-    sendResetPasswordOTP: '/otp/',
-    sendResetPasswordEmail: '/email/',
-    verifyOTP: '/otp-verification/',
-    resetPassword: '/password/',
+    verifyOTP: '/auth/verify-otp/',
+    resetPassword: '/auth/reset-password/',
+    changePassword: 'auth/change-password',
     refreshToken: '/refresh-token/',
     users: '/',
 };
