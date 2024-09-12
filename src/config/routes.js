@@ -1,5 +1,6 @@
 const routes = {
     home: '/',
+    dashboard: '/admin/dashboard',
     blog: '/blog',
     live: '/live',
     profile:(slug) => `/${slug}`,
@@ -7,8 +8,6 @@ const routes = {
     search: '/search',
     createPayment: (course_id) => `/payment/${course_id}`,
     courseDetails: (course_id) => `course/${course_id}`,
-
-
     myCourseDetails: (course_id) => `my-course/${course_id}`,
 
     registeredCourse: '/registered-course',

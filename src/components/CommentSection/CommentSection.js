@@ -77,7 +77,7 @@ function CommentSection({
 
     return (
         <div className={cx('wrapper', { replyMode })}>
-            <Avatar fontsize="4.5px" alt={user.name} src={user.avatar} />
+            <Avatar fontsize="4.5px" alt={user?.name} src={user?.avatar} />
 
             <div className={cx('comment-section')}>
                 <div className={cx('new-comment')}>

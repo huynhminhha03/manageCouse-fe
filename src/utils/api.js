@@ -1,40 +1,41 @@
 import axios from 'axios';
+import CheckTokenExpired from './checkTokenExpired';
 
-const HOST = 'http://localhost:8080/api';
+
+const HOST = 'https://f5b6-14-169-84-114.ngrok-free.app/api';
+
 
 export const userApis = {
-    
     getCurrentUser: '/current-user',
     updateCurrentUser: '/current-user',
     getReturnUrl: '/vnpay_return',
     createPayment: '/create_payment_url',
-    currentUser: '/current-user',
     getUserBySlug: (slug) => `/users/${slug}`,
 
     getAllCourses: '/courses',
     getCoursesBySlug: '/courses/results',
-    getCourseDetails: (course_id) =>  `/courses/${course_id}`,
-    getQuickViewLessons: (course_id) =>  `/courses/${course_id}/lessons/quick-view`,
-    getLesson: (course_id, lesson_id) =>  `/courses/${course_id}/lessons/${lesson_id}`,
-    getAllLesson: (course_id) =>  `/courses/${course_id}/lessons`,
+    getCourseDetails: (course_id) => `/courses/${course_id}`,
+    getQuickViewLessons: (course_id) => `/courses/${course_id}/lessons/quick-view`,
+    getLesson: (course_id, lesson_id) => `/courses/${course_id}/lessons/${lesson_id}`,
+    getAllLesson: (course_id) => `/courses/${course_id}/lessons`,
 
     getMyCourses: '/my-courses',
     getRegisterCourses: '/registered-courses',
     showRegisterCourses: (slug) => `${slug}/registered-courses/show`,
-    getMyCourseDetails: (course_id) =>  `/my-courses/${course_id}`,
+    getMyCourseDetails: (course_id) => `/my-courses/${course_id}`,
     createCourse: '/my-courses',
-    updateCourse: (course_id) =>  `/my-courses/${course_id}`,
-    deleteCourse: (course_id) =>  `/my-courses/${course_id}`,
-    
-    getLessonsByCourseId: (course_id) =>  `/my-courses/${course_id}/lessons`,
-    getLessonById: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
-    createLesson: (course_id) =>  `/my-courses/${course_id}/lessons`,
-    updateLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
-    deleteLesson: (course_id, lesson_id) =>  `/my-courses/${course_id}/lessons/${lesson_id}`,
+    updateCourse: (course_id) => `/my-courses/${course_id}`,
+    deleteCourse: (course_id) => `/my-courses/${course_id}`,
+
+    getLessonsByCourseId: (course_id) => `/my-courses/${course_id}/lessons`,
+    getLessonById: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
+    createLesson: (course_id) => `/my-courses/${course_id}/lessons`,
+    updateLesson: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
+    deleteLesson: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
 
     registerCourse: (course_id) => `/courses/${course_id}/register`,
-    checkRegisterCourse: (course_id) =>  `/courses/${course_id}/register/checked`,
-    
+    checkRegisterCourse: (course_id) => `/courses/${course_id}/register/checked`,
+
     createBlog: '/my-blogs',
     getMyBlogs: '/my-blogs',
     getMyBlogById: (id) => `/my-blogs/${id}`,
@@ -88,22 +89,37 @@ const api = axios.create({
         'Content-Type': 'application/json',
     },
     withCredentials: true,
-
 });
 
 export const authAPI = () => {
     const token = localStorage.getItem('token');
     console.log('Token: ', token);
 
-    return axios.create({
+    const instance = axios.create({
         baseURL: HOST,
         headers: {
             Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
     });
+
+    instance.interceptors.request.use(
+        (config) => {
+            const token = localStorage.getItem('token');
+
+            if (CheckTokenExpired(token)) {
+                localStorage.removeItem('token');
+                throw new axios.Cancel('Token expired. Redirecting to login.');
+            }
+
+            return config;
+        },
+        (error) => {
+            return Promise.reject(error);
+        },
+    );
+
+    return instance;
 };
-
-
 
 export default api;

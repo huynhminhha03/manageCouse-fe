@@ -12,10 +12,12 @@ import config from '~/config';
 import api, { authAPI, userApis } from '~/utils/api';
 import ReplyComment from './ReplyComment';
 import UserContext from '~/context/UserContext';
+import ModalTypeContext from '~/context/ModalTypeContext';
 
 const cx = classNames.bind(styles);
 
-function Comment({ type, fetchParentComments, data, type_id }) {
+function Comment({ type, fetchParentComments, data, type_id, onClose }) {
+    console.log('data', data);
     const [showOptions, setShowOptions] = useState(false);
     const [showReplies, setShowReplies] = useState(false);
     const [showRepliesComment, setShowRepliesComment] = useState(false);
@@ -26,24 +28,32 @@ function Comment({ type, fetchParentComments, data, type_id }) {
     const [isEditing, setIsEditing] = useState(false);
 
     const { user } = useContext(UserContext);
+    const { setModalType } = useContext(ModalTypeContext);
 
-    const likeComment = async () => {
-        try {
-            await authAPI().post(userApis.likeComment(data._id));
-            const newLikeCount = activedLike ? likeCount - 1 : likeCount + 1;
-            setLikeCount(newLikeCount);
-        } catch (error) {
-            console.log(error);
+    const handleLikeComment = async () => {
+        if (user) {
+            setActivedLike(!activedLike);
+            try {
+                await authAPI().post(userApis.likeComment(data._id));
+                const newLikeCount = activedLike ? likeCount - 1 : likeCount + 1;
+                setLikeCount(newLikeCount);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setModalType('login');
+            onClose();
+
         }
     };
 
-    const handleLikeComment = () => {
-        setActivedLike(!activedLike);
-        likeComment();
-    };
-
     const handleReply = () => {
-        setShowReplies(true);
+        if (user) {
+            setShowReplies(true);
+        } else {
+            setModalType('login');
+            onClose();
+        }
     };
 
     useEffect(() => {
@@ -157,7 +167,7 @@ function Comment({ type, fetchParentComments, data, type_id }) {
                                 </span>
                             )}
 
-                            {user._id === data.creator._id && (
+                            {user && user?._id === data.creator._id && (
                                 <HeadlessTippy
                                     visible={showOptions}
                                     interactive

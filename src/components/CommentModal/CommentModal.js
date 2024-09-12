@@ -1,18 +1,20 @@
 import classNames from 'classnames/bind';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { CloseIcon, NoCommentIcon } from '~/components/Icons';
 import CommentSection from '~/components/CommentSection';
 import Comment from '~/components/Comment';
 import api, { userApis } from '~/utils/api';
 
 import styles from './CommentModal.module.scss';
+import UserContext from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 
 function CommentModal({ onClose, type, type_id, commentCount, setCommentCount }) {
     const [isClosing, setIsClosing] = useState(false);
     const [comments, setComments] = useState([]);
-
+    const { user }= useContext(UserContext);
+    
     const handleClose = useCallback(() => {
         setIsClosing(true);
         setTimeout(() => {
@@ -35,8 +37,6 @@ function CommentModal({ onClose, type, type_id, commentCount, setCommentCount })
         fetchParentComments();
     }, [fetchParentComments]);
 
-    
-
     return (
         <div className={cx('wrapper', { isClosing })}>
             <div className={cx('overlay')} onClick={handleClose}></div>
@@ -47,13 +47,15 @@ function CommentModal({ onClose, type, type_id, commentCount, setCommentCount })
                 <div className={cx('comment-modal')}>
                     <div className={cx('body')}>
                         <div className="container" style={{ padding: '16px' }}>
-                            <div className={cx('content')}>
-                                <CommentSection
-                                    type={type}
-                                    type_id={type_id}
-                                    fetchParentComments={fetchParentComments}
-                                />
-                            </div>
+                            {user && (
+                                <div className={cx('content')}>
+                                    <CommentSection
+                                        type={type}
+                                        type_id={type_id}
+                                        fetchParentComments={fetchParentComments}
+                                    />
+                                </div>
+                            )}
                             <div className={cx('show-comment')}>
                                 <div className={cx('header')}>
                                     <h2 className={cx('title')}>{commentCount} bình luận</h2>
@@ -63,12 +65,12 @@ function CommentModal({ onClose, type, type_id, commentCount, setCommentCount })
                                     comments.map((comment, index) => (
                                         <div key={index}>
                                             <Comment
+                                            onClose={onClose}
                                                 fetchParentComments={fetchParentComments}
                                                 data={comment}
                                                 type={type}
                                                 type_id={type_id}
                                             />
-
                                         </div>
                                     ))
                                 ) : (

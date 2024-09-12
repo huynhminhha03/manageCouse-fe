@@ -7,22 +7,29 @@ import config from '~/config';
 import { useContext, useEffect, useState } from 'react';
 import { authAPI, userApis } from '~/utils/api';
 import UserContext from '~/context/UserContext';
+import ModalTypeContext from '~/context/ModalTypeContext';
 
 const cx = classNames.bind(styles);
 
 function PostItem(params) {
     const { src, alt, name, title, desc, tags, createAt, id, toCreator } = params;
+    const navigate = useNavigate();
 
     const [activedBookmark, setActivedBookmark] = useState(false);
 
     const { user } = useContext(UserContext);
+    const { setModalType } = useContext(ModalTypeContext);
 
     const bookmarkBlog = async () => {
-        try {
-            await authAPI().post(userApis.bookmarkBlog(id));
-            setActivedBookmark(!activedBookmark);
-        } catch (error) {
-            console.log(error);
+        if (user) {
+            try {
+                await authAPI().post(userApis.bookmarkBlog(id));
+                setActivedBookmark(!activedBookmark);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setModalType('login');
         }
     };
 
@@ -40,7 +47,6 @@ function PostItem(params) {
         }
     }, [id, user]);
 
-    const navigate = useNavigate();
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>

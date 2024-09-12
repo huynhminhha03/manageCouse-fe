@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
 import { Outlet, Link, useLocation } from "react-router-dom";
 
-import styles from './Sidebar.module.scss';
+import styles from './SidebarAdmin.module.scss';
 import { HomeIcon, PostIcon, RoadmapIcon } from '~/components/Icons';
 import config from '~/config';
-
+import { useContext } from 'react';
+import UserContext from '~/context/UserContext';
 
 const cx = classNames.bind(styles);
 

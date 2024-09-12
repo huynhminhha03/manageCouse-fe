@@ -99,7 +99,7 @@ function Search() {
                     onFocus={() => setShowResult(true)}
                     className={cx('search-input')}
                     type="text"
-                    placeholder="Tìm kiếm khoá học, bài viết, video,..."
+                    placeholder="Tìm kiếm khoá học..."
                     spellCheck="false"
                 />
                 <button className={cx('search-btn')} onClick={handleSearch}>

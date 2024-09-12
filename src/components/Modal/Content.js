@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { ModalTypeContext } from '~/context/ModalTypeContext';
+import ModalTypeContext from '~/context/ModalTypeContext';
 import classNames from 'classnames/bind';
 
 import styles from './Modal.module.scss';
@@ -69,7 +69,8 @@ function Content() {
 
     const [resetPasswordSuccess, setResetPasswordSuccess] = useState(false);
 
-    const handleClick = (to) => {
+    const handleClick = (e, to) => {
+        e.preventDefault();
         const camelCaseScreen = toCamelCase(to);
         console.log(camelCaseScreen);
         console.log(to);
@@ -128,10 +129,10 @@ function Content() {
                     {modalType === 'register' || modalType === 'login' ? (
                         <>
                             {icons.map((item, index) => (
-                                <button className={cx('wrapper-btn')} key={index} onClick={() => handleClick(item.to)}>
+                                <a href={item.to} className={cx('wrapper-btn')} key={index} onClick={(e) => handleClick(e, item.to)}>
                                     <span className={cx('icon')}>{item.icon}</span>
                                     <span className={cx('title')}>{item.title}</span>
-                                </button>
+                                </a>
                             ))}
                         </>
                     ) : modalType === 'loginEmail' ? (

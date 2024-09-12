@@ -59,6 +59,7 @@ function Blog() {
                         params: { page },
                     });
                 }
+                console.log(response.data.data);
                 setDataBlogs(response.data.data);
                 setTotalPages(Math.ceil(response.data.total / response.data.limit));
                 setIsLoading(false); // Dữ liệu đã được tải xong

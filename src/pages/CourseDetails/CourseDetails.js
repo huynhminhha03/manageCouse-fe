@@ -7,6 +7,7 @@ import api, { authAPI, userApis } from '~/utils/api';
 import formatDate from '~/utils/formatDate';
 import formatDuration from '~/utils/formatDuration';
 import UserContext from '~/context/UserContext';
+import ModalTypeContext from '~/context/ModalTypeContext';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +18,7 @@ function CourseDetails() {
     const { course_id } = useParams();
     const navigate = useNavigate();
     const { user } = useContext(UserContext);
+    const { setModalType } = useContext(ModalTypeContext);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -59,33 +61,37 @@ function CourseDetails() {
     }, [fetchCourseData]);
 
     const handleClick = async () => {
-        try {
-            if (hasRegister) {
-                navigate(`/course/${course_id}/lesson`);
-                return;
-            }
-            if (courseData.is_free) {
-                const response = await authAPI().post(userApis.registerCourse(course_id));
-                navigate(`/course/${course_id}/lesson`);
-                console.log(response.data);
-            } else {
-                const response = await authAPI().post(userApis.createPayment, {
-                    amount: courseData.price,
-                    bankCode: 'NCB',
-                    language: 'vn',
-                    course_id,
-                });
-                if (response.data && response.data.paymentUrl) {
-                    window.location.href = response.data.paymentUrl;
-                } else {
-                    alert('Không thể khởi tạo thanh toán, vui lòng thử lại.');
+        if (user) {
+            try {
+                if (hasRegister) {
+                    navigate(`/course/${course_id}/lesson`);
+                    return;
                 }
-            }
-        } catch (error) {
-            console.error('Error registering for course:', error);
-            alert('Có lỗi xảy ra trong quá trình đăng ký, vui lòng thử lại.');
-        } finally {
-            setLoading(false);
+                if (courseData.is_free) {
+                    const response = await authAPI().post(userApis.registerCourse(course_id));
+                    navigate(`/course/${course_id}/lesson`);
+                    console.log(response.data);
+                } else {
+                    const response = await authAPI().post(userApis.createPayment, {
+                        amount: courseData.price,
+                        bankCode: 'NCB',
+                        language: 'vn',
+                        course_id,
+                    });
+                    if (response.data && response.data.paymentUrl) {
+                        window.location.href = response.data.paymentUrl;
+                    } else {
+                        alert('Không thể khởi tạo thanh toán, vui lòng thử lại.');
+                    }
+                }
+            } catch (error) {
+                console.error('Error registering for course:', error);
+                
+            } finally {
+                setLoading(false);
+            } 
+        } else {
+            setModalType('login');
         }
     };
 

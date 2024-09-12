@@ -12,6 +12,7 @@ import CommentModal from '~/components/CommentModal';
 import { authAPI, userApis } from '~/utils/api';
 import { calculateTimeSinceCreation } from '~/utils/calculateTimeSinceCreation';
 import UserContext from '~/context/UserContext';
+import ModalTypeContext from '~/context/ModalTypeContext';
 
 const cx = classNames.bind(styles);
 
@@ -30,7 +31,8 @@ function BlogDetails() {
 
     const navigate = useNavigate();
 
-    const {user} = useContext(UserContext);
+    const { user } = useContext(UserContext);
+    const { setModalType } = useContext(ModalTypeContext);
 
     useEffect(() => {
         if (user) {
@@ -47,8 +49,6 @@ function BlogDetails() {
                     setActivedBookmark(bookmarkResponse.data.bookmarked);
                 } catch (error) {
                     console.log(error);
-                    navigate('/404');
-
                 }
             };
 
@@ -65,28 +65,34 @@ function BlogDetails() {
     };
 
     const likeBlog = async () => {
-        try {
-            setActivedLike(!activedLike);
+        if (user) {
+            try {
+                setActivedLike(!activedLike);
 
-            await authAPI().post(userApis.likeBlog(blogId));
-            // Cập nhật số lượng like sau khi người dùng bấm like/unlike
-            const newLikeCount = activedLike ? likeCount - 1 : likeCount + 1;
-            setLikeCount(newLikeCount);
-        } catch (error) {
-            console.log(error);
+                await authAPI().post(userApis.likeBlog(blogId));
+                // Cập nhật số lượng like sau khi người dùng bấm like/unlike
+                const newLikeCount = activedLike ? likeCount - 1 : likeCount + 1;
+                setLikeCount(newLikeCount);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setModalType('login');
         }
     };
 
     const bookmarkBlog = async () => {
-        try {
-            await authAPI().post(userApis.bookmarkBlog(blogId));
-            setActivedBookmark(!activedBookmark);
-        } catch (error) {
-            console.log(error);
+        if (user) {
+            try {
+                await authAPI().post(userApis.bookmarkBlog(blogId));
+                setActivedBookmark(!activedBookmark);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setModalType('login');
         }
     };
-
-    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,7 +102,6 @@ function BlogDetails() {
                     authAPI().get(userApis.getNumberBlogLikes(blogId)),
                     authAPI().get(userApis.getNumberBlogComments(blogId)),
                     authAPI().get(userApis.getOtherBlogs(blogId)),
-
                 ]);
 
                 // Cập nhật state sau khi cả hai hàm đã hoàn thành
@@ -113,7 +118,6 @@ function BlogDetails() {
 
         fetchData();
     }, [blogId]);
-
 
     if (loading) {
         return <div>Loading...</div>;
@@ -171,7 +175,7 @@ function BlogDetails() {
                             </div>
                         </div>
                         <div className={cx('content')}>
-                        <div dangerouslySetInnerHTML={{ __html: blogData?.content }} />
+                            <div dangerouslySetInnerHTML={{ __html: blogData?.content }} />
                         </div>
                     </article>
                     <div className={cx('body-bottom')}>
@@ -183,8 +187,7 @@ function BlogDetails() {
                             commentCount={commentCount}
                         />
                         <OtherPost posts={otherBlogs} setBlogId={setBlogId} />
-                        <div className={cx('wrap-topic')}>
-                        </div>
+                        <div className={cx('wrap-topic')}></div>
                     </div>
                     {showComment && (
                         <CommentModal

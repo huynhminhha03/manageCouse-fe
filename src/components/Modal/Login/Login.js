@@ -11,7 +11,7 @@ import Spinner from '~/components/Spinner';
 const cx = classNames.bind(styles);
 
 function Login() {
-    const [username, setUsername] = useState({ value: 'hadep7a@gmail.com', error: '' });
+    const [username, setUsername] = useState({ value: 'hadep@ou.edu.vn', error: '' });
     const [password, setPassword] = useState({ value: 'minhha2k3', error: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 

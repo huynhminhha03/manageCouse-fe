@@ -107,6 +107,7 @@ function ReplyComment({ type, fetchParentComments, data, type_id }) {
         setIsEditing(true);
     };
 
+
     const handleDeleteComment = async () => {
         try {
             setShowOptions(false);

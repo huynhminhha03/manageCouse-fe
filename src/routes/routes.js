@@ -22,9 +22,11 @@ import Payment from '~/pages/Payment';
 import ViewLessons from '~/pages/ViewLessons';
 import NotFound from '~/pages/NotFound';
 import Settings from '~/pages/Settings';
+import AdminSite from '~/pages/AdminSite';
 
 const publicRoutes = [
     { path: '/', component: Home },
+    { path: '/admin/dashboard', component: AdminSite },
     { path: '/course/:course_id', component: CourseDetails, layout: WithoutSidebar  },
     { path: '/settings', component: Settings, layout: null  },
     { path: '/course/:course_id/lesson/:lesson_id', component: ViewLessons , layout: null},
@@ -52,6 +54,8 @@ const publicRoutes = [
     { path: '*', component: NotFound, layout: null },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [
+
+];
 
 export { publicRoutes, privateRoutes };
