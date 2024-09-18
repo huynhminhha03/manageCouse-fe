@@ -167,7 +167,7 @@ function Comment({ type, fetchParentComments, data, type_id, onClose }) {
                                 </span>
                             )}
 
-                            {user && user?._id === data.creator._id && (
+                            {user && user?.id === data.creator._id && (
                                 <HeadlessTippy
                                     visible={showOptions}
                                     interactive

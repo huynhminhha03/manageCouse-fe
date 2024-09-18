@@ -4,7 +4,6 @@ import styles from './Login.module.scss';
 import InputWrapper from '~/components/InputWrapper';
 import { handleInputBlur } from '~/utils/handleInputBlur';
 import { ErrorIcon } from '~/components/Icons';
-import RememberLogin from '~/components/RememberLogin';
 import api, { userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
 

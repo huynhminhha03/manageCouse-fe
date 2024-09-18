@@ -13,7 +13,7 @@ function RegisterCourse() {
         const handleFetchRegisterCourses = async () => {
             try {
                 const response = await authAPI().get(userApis.getRegisterCourses);
-                setRegisterCourses(response.data.courses);
+                setRegisterCourses(response.data);
                 console.log(response.data);
             } catch (error) {
                 console.log(error);
@@ -31,10 +31,10 @@ function RegisterCourse() {
                             registerCourse.map((course, index) => (
                                 <div className="col mt-5 col-lg-3" key={index}>
                                     <CardItem
-                                        src={course?.course_id?.image_url}
-                                        title={course?.course_id?.title}
-                                        desc={course?.course_id?.title}
-                                        id={course?.course_id?._id}
+                                        src={course?.imageUrl}
+                                        title={course?.title}
+                                        desc={course?.title}
+                                        id={course?.id}
                                         isRegisterCourse
                                     />
                                 </div>

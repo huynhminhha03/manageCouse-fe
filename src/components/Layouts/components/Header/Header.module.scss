@@ -84,6 +84,16 @@
     transition: opacity 0.25s;
 }
 
+.chat-icon {
+    font-size: 2.2rem;
+    padding: 4px;
+    margin-right: 4px;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .wrap-popper {
     background: var(--white-color);
     box-shadow: 0 -4px 32px #0003;

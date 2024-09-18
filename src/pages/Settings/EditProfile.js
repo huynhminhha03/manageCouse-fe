@@ -47,8 +47,8 @@ function EditProfile({ onClose, userData }) {
         formData.append('slug', username.value);
         formData.append('desc', desc.value);
         if (avatar) {
-            formData.append('avatar', avatar);  // Thêm file ảnh vào formData
-        }
+            formData.append('avatar', avatar); 
+        } 
 
         try {
             await authAPI().patch(userApis.updateCurrentUser, formData, {

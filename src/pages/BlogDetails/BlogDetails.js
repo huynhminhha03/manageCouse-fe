@@ -6,7 +6,6 @@ import styles from './BlogDetails.module.scss';
 import config from '~/config';
 import Avatar from '~/components/Avatar';
 import { ActivedBookmarkIcon, BookMarkIcon, OptionIcon } from '~/components/Icons';
-import OtherPost from '~/components/OtherPost';
 import Interact from '~/components/Interact';
 import CommentModal from '~/components/CommentModal';
 import { authAPI, userApis } from '~/utils/api';
@@ -20,7 +19,6 @@ function BlogDetails() {
     const [likeCount, setLikeCount] = useState(0);
     const [commentCount, setCommentCount] = useState(0);
     const [blogData, setBlogData] = useState({});
-    const [otherBlogs, setOtherBlogs] = useState({});
     const [activedLike, setActivedLike] = useState(false);
     const [activedBookmark, setActivedBookmark] = useState(false);
     const [showComment, setShowComment] = useState(false);
@@ -101,7 +99,7 @@ function BlogDetails() {
                 // Cập nhật state sau khi cả hai hàm đã hoàn thành
                 setBlogData(blogResponse.data);
                 setLikeCount(numberLikes.data.count);
-                setCommentCount(numberComments.data.total_comments);
+                setCommentCount(numberComments.data.count);
                 setLoading(false);
             } catch (error) {
                 console.log(error);
@@ -152,7 +150,7 @@ function BlogDetails() {
                                     <Link to={config.routes.profile(blogData?.creator?.slug)}>
                                         <span className={cx('name')}>{blogData?.creator?.name}</span>
                                     </Link>
-                                    <p className={cx('time')}>{calculateTimeSinceCreation(blogData?.updatedAt)}</p>
+                                    <p className={cx('time')}>{calculateTimeSinceCreation(blogData?.createdAt)}</p>
                                 </div>
                             </div>
                             <div className={cx('actions')}>

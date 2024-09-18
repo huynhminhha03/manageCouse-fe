@@ -36,6 +36,7 @@ function Header({ transparent, hasBackBtn }) {
         window.location.reload();
     };
 
+    
     console.log(user);
 
     const openModal = (type) => {
@@ -47,6 +48,10 @@ function Header({ transparent, hasBackBtn }) {
         setModalType(null);
     };
 
+    const handleClickChatBtn = () => {
+        window.location.href = `${process.env.REACT_APP_API_URL}/chatting`;
+    }
+
     useEffect(() => {
         if (token) {
             const fetchUserData = async () => {
@@ -56,7 +61,7 @@ function Header({ transparent, hasBackBtn }) {
                     setUser(response.data);
                     console.log('user-data ', response.data);
                 } catch (error) {
-                // Xử lý lỗi ở đây
+                    // Xử lý lỗi ở đây
                     console.log(error);
                 }
             };
@@ -68,7 +73,7 @@ function Header({ transparent, hasBackBtn }) {
         setShowMyCourses(!showMyCourses);
         try {
             const response = await authAPI().get(userApis.getRegisterCourses);
-            setRegisterCourses(response.data.courses);
+            setRegisterCourses(response.data);
             console.log(response.data);
         } catch (error) {
             console.log(error);
@@ -106,6 +111,9 @@ function Header({ transparent, hasBackBtn }) {
                         </>
                     ) : (
                         <>
+                            <span className={cx('chat-icon')} onClick={handleClickChatBtn}>
+                                <i class="fa-regular fa-comments"></i>
+                            </span>
                             {(!transparent || config.routes.createBlog === location.pathname) && (
                                 <HeadlessTippy
                                     visible={showMyCourses && config.routes.registeredCourse !== location.pathname}
@@ -129,27 +137,26 @@ function Header({ transparent, hasBackBtn }) {
                                                     {registerCourse ? (
                                                         registerCourse.map((course, index) => (
                                                             <Link
-                                                                to={`/course/${course.course_id}`}
+                                                                to={`/course/${course.id}`}
                                                                 key={index}
                                                                 className={cx('course-item')}
                                                             >
                                                                 <span>
                                                                     <img
                                                                         className={cx('course-thumb')}
-                                                                        src={course?.course_id?.image_url}
-                                                                        alt={course?.course_id?.title}
+                                                                        src={course?.imageUrl}
+                                                                        alt={course?.title}
                                                                     />
                                                                 </span>
                                                                 <div className={cx('course-info')}>
                                                                     <h3 className={cx('course-title')}>
-                                                                        {course?.course_id?.title}
+                                                                        {course?.title}
                                                                     </h3>
                                                                 </div>
                                                             </Link>
                                                         ))
                                                     ) : (
                                                         <div className={cx('no-result')}>
-                                                        
                                                             Bạn chưa đăng ký khoá học nào
                                                         </div>
                                                     )}
@@ -264,8 +271,6 @@ function Header({ transparent, hasBackBtn }) {
                                             </ul>
 
                                             <hr />
-
-                                            
 
                                             <ul className={cx('list')}>
                                                 <li>

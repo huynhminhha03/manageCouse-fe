@@ -5,7 +5,6 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import images from '~/assets/images';
 import { useEffect, useState, useCallback } from 'react';
 import api, { authAPI, userApis } from '~/utils/api';
-import formatDuration from '~/utils/formatDuration';
 
 const cx = classNames.bind(styles);
 

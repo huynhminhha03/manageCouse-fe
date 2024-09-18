@@ -75,7 +75,7 @@ function MyBlog() {
                                     </h3>
                                     <div className={cx('author')}>
                                         <Link to={`/blogs/${blog?._id}`}>
-                                            Chỉnh sửa {calculateTimeSinceCreation(blog?.updatedAt)}
+                                            Chỉnh sửa {calculateTimeSinceCreation(blog?.createdAt)}
                                         </Link>
                                         <span className={cx('dot')}>·</span>
                                         <span>

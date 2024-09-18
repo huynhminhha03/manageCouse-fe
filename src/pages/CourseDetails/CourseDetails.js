@@ -4,8 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styles from './CourseDetails.module.scss';
 import { VideoIcon } from '~/components/Icons';
 import api, { authAPI, userApis } from '~/utils/api';
-import formatDate from '~/utils/formatDate';
-import formatDuration from '~/utils/formatDuration';
 import UserContext from '~/context/UserContext';
 import ModalTypeContext from '~/context/ModalTypeContext';
 
@@ -67,29 +65,21 @@ function CourseDetails() {
                     navigate(`/course/${course_id}/lesson`);
                     return;
                 }
-                if (courseData.is_free) {
-                    const response = await authAPI().post(userApis.registerCourse(course_id));
+
+                const response = await authAPI().post(userApis.createPayment(course_id));
+
+                if (response.data && !courseData?.isFree) {
+                    window.location.href = response.data;
+                } else if (response.data) {
                     navigate(`/course/${course_id}/lesson`);
-                    console.log(response.data);
                 } else {
-                    const response = await authAPI().post(userApis.createPayment, {
-                        amount: courseData.price,
-                        bankCode: 'NCB',
-                        language: 'vn',
-                        course_id,
-                    });
-                    if (response.data && response.data.paymentUrl) {
-                        window.location.href = response.data.paymentUrl;
-                    } else {
-                        alert('Không thể khởi tạo thanh toán, vui lòng thử lại.');
-                    }
+                    alert('Không thể khởi tạo thanh toán, vui lòng thử lại.');
                 }
             } catch (error) {
                 console.error('Error registering for course:', error);
-                
             } finally {
                 setLoading(false);
-            } 
+            }
         } else {
             setModalType('login');
         }
@@ -118,15 +108,17 @@ function CourseDetails() {
                             </div>
 
                             <div className={cx('lesson-list')}>
-                                {courseData?.lessons?.length > 0 ? courseData?.lessons?.map((lesson, index) => (
-                                    <div key={index} className={cx('lesson-item')}>
-                                        <span className={cx('icon-link')}>
-                                            <VideoIcon />
-                                            <div className={cx('lesson-name')}>{lesson?.title}</div>
-                                        </span>
-                                        {/* <span>{formatDuration(lesson?.duration) || '00:00'}</span> */}
-                                    </div>
-                                )) : (
+                                {courseData?.lessons?.length > 0 ? (
+                                    courseData?.lessons?.map((lesson, index) => (
+                                        <div key={index} className={cx('lesson-item')}>
+                                            <span className={cx('icon-link')}>
+                                                <VideoIcon />
+                                                <div className={cx('lesson-name')}>{lesson?.title}</div>
+                                            </span>
+                                            {/* <span>{formatDuration(lesson?.duration) || '00:00'}</span> */}
+                                        </div>
+                                    ))
+                                ) : (
                                     <span>Hiện chưa có bài học nào</span>
                                 )}
                             </div>
@@ -143,7 +135,7 @@ function CourseDetails() {
                                     }}
                                 ></div>
                             </div>
-                            <h5>{courseData?.is_free ? 'Miễn phí' : `${courseData?.price}đ`}</h5>
+                            <h5>{courseData?.isFree ? 'Miễn phí' : `${courseData?.price}đ`}</h5>
 
                             <button className={cx('register-btn')} onClick={handleClick} disabled={loading}>
                                 <span className={cx('inner')}>

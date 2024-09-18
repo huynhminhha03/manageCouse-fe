@@ -15,7 +15,7 @@ function Home() {
         const fetchAllCourse = async () => {
             try {
                 const response = await api.get(userApis.getAllCourses);
-                setCourses(response.data.content);
+                setCourses(response.data);
                 console.log('response: ', response.data);
             } catch (error) {
                 console.log(error);
@@ -31,8 +31,8 @@ function Home() {
                 <Classify title="Khóa học Pro" label={'Mới'} viewMore={'Xem tất cả'}>
                     <div className="row">
                         {courses &&
-                            !courses?.isFree &&
-                            courses?.map((proCourse, index) => (
+                            courses?.proCourses &&
+                            courses?.proCourses?.map((proCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
                                         id={proCourse?.id}
@@ -52,8 +52,8 @@ function Home() {
                 <Classify title="Khóa học miễn phí" viewMore={'Xem tất cả'}>
                     <div className="row">
                         {courses &&
-                            courses?.isFree &&
-                            courses?.map((freeCourse, index) => (
+                            courses?.freeCourses &&
+                            courses?.freeCourses?.map((freeCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
                                         id={freeCourse?.id}

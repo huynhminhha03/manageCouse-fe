@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Payment.module.scss';
-import { authAPI, userApis } from '~/utils/api';
 
 const cx = classNames.bind(styles);
 
@@ -12,25 +11,18 @@ function PaymentResult() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchPaymentData = async () => {
-            try {
-                const queryParams = new URLSearchParams(window.location.search);
-                const paymentData = {};
+        const fetchPaymentData = () => {
+            const queryParams = new URLSearchParams(window.location.search);
+            const paymentData = {};
 
-                queryParams.forEach((value, key) => {
-                    paymentData[key] = value;
-                });
+            queryParams.forEach((value, key) => {
+                paymentData[key] = value;
+            });
 
-                const response = await authAPI().get(userApis.getReturnUrl, { params: paymentData });
-                console.log(response.data);
-                console.log(paymentData);
-                if (response.data.code === '00') {
-                    setPaymentInfo(paymentData);
-                } else {
-                    setError('Thanh toán không thành công');
-                }
-            } catch (error) {
-                setError('Có lỗi xảy ra khi xác thực thanh toán');
+            if (paymentData.vnp_ResponseCode === '00') {
+                setPaymentInfo(paymentData);
+            } else {
+                setError('Thanh toán không thành công');
             }
         };
 
@@ -53,16 +45,16 @@ function PaymentResult() {
                             Mã giao dịch: <span>{paymentInfo.vnp_TransactionNo}</span>
                         </p>
                         <p className={cx('info')}>
-                            Số tiền: <span>{(paymentInfo.vnp_Amount / 100)}đ</span>
+                            Số tiền: <span>{paymentInfo.amount / 100}đ</span>
                         </p>
-                        <p className={cx('info')}>
+                        {/* <p className={cx('info')}>
                             Ngân hàng: <span>{paymentInfo.vnp_BankCode}</span>
                         </p>
                         <p className={cx('info')}>
                             Loại thẻ: <span>{paymentInfo.vnp_CardType}</span>
-                        </p>
+                        </p> */}
                         <p className={cx('info')}>
-                            Thông tin đơn hàng: <span>{paymentInfo.vnp_OrderInfo}</span>
+                            Thông tin khoá học: <span>{paymentInfo.orderInfo}</span>
                         </p>
                     </div>
                 )}

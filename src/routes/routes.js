@@ -23,9 +23,11 @@ import ViewLessons from '~/pages/ViewLessons';
 import NotFound from '~/pages/NotFound';
 import Settings from '~/pages/Settings';
 import AdminSite from '~/pages/AdminSite';
+import Chat from '~/pages/Chat';
 
 const publicRoutes = [
     { path: '/', component: Home },
+    { path: '/chatting', component: Chat, layout: WithoutSidebar  },
     { path: '/admin/dashboard', component: AdminSite },
     { path: '/course/:course_id', component: CourseDetails, layout: WithoutSidebar  },
     { path: '/settings', component: Settings, layout: null  },

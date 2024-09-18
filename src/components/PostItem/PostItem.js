@@ -4,10 +4,8 @@ import { ActivedBookmarkIcon, BookMarkIcon, OptionIcon } from '~/components/Icon
 import styles from './PostItem.module.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import config from '~/config';
-import { useContext, useEffect, useState } from 'react';
-import { authAPI, userApis } from '~/utils/api';
-import UserContext from '~/context/UserContext';
-import ModalTypeContext from '~/context/ModalTypeContext';
+import {  useState } from 'react';
+
 
 const cx = classNames.bind(styles);
 
@@ -17,22 +15,22 @@ function PostItem(params) {
 
     const [activedBookmark, setActivedBookmark] = useState(false);
 
-    const { user } = useContext(UserContext);
-    const { setModalType } = useContext(ModalTypeContext);
+    // const { user } = useContext(UserContext);
+    // const { setModalType } = useContext(ModalTypeContext);
 
-    const bookmarkBlog = async () => {
+    // const bookmarkBlog = async () => {
         
-        if (user) {
-            try {
-                await authAPI().post(userApis.bookmarkBlog(id));
-                setActivedBookmark(!activedBookmark);
-            } catch (error) {
-                console.log(error);
-            }
-        } else {
-            setModalType('login');
-        }
-    };
+    //     if (user) {
+    //         try {
+    //             await authAPI().post(userApis.bookmarkBlog(id));
+    //             setActivedBookmark(!activedBookmark);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     } else {
+    //         setModalType('login');
+    //     }
+    // };
 
     // useEffect(() => {
     //     if (user) {
