@@ -30,7 +30,7 @@ function Header({ transparent, hasBackBtn }) {
     const [showNotify, setShowNotify] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const token = localStorage.getItem('token');
-
+    console.log(token);
     const handleLogout = () => {
         localStorage.removeItem('token');
         window.location.reload();
@@ -56,7 +56,7 @@ function Header({ transparent, hasBackBtn }) {
                     setUser(response.data);
                     console.log('user-data ', response.data);
                 } catch (error) {
-                    // Xử lý lỗi ở đây
+                // Xử lý lỗi ở đây
                     console.log(error);
                 }
             };
@@ -149,7 +149,7 @@ function Header({ transparent, hasBackBtn }) {
                                                         ))
                                                     ) : (
                                                         <div className={cx('no-result')}>
-                                                            {' '}
+                                                        
                                                             Bạn chưa đăng ký khoá học nào
                                                         </div>
                                                     )}
@@ -265,35 +265,7 @@ function Header({ transparent, hasBackBtn }) {
 
                                             <hr />
 
-                                            {user?.role_id?.name === 'isTeacher' && (
-                                                <ul className={cx('list')}>
-                                                    <li>
-                                                        <Link
-                                                            to={config.routes.myCourse}
-                                                            className={cx('item')}
-                                                            onClick={() => setShowProfile(false)}
-                                                        >
-                                                            Khoá học của tôi
-                                                        </Link>
-                                                    </li>
-                                                    <hr />
-                                                </ul>
-                                            )}
-
-                                            {user?.role_id?.name === 'isAdmin' && (
-                                                <ul className={cx('list')}>
-                                                    <li>
-                                                        <Link
-                                                            to={config.routes.dashboard}
-                                                            className={cx('item')}
-                                                            onClick={() => setShowProfile(false)}
-                                                        >
-                                                            Bảng điều khiển
-                                                        </Link>
-                                                    </li>
-                                                    <hr />
-                                                </ul>
-                                            )}
+                                            
 
                                             <ul className={cx('list')}>
                                                 <li>
@@ -314,7 +286,7 @@ function Header({ transparent, hasBackBtn }) {
                                                         Bài viết của tôi
                                                     </Link>
                                                 </li>
-                                                <li>
+                                                {/* <li>
                                                     <Link
                                                         className={cx('item')}
                                                         to={config.routes.bookmark}
@@ -322,7 +294,7 @@ function Header({ transparent, hasBackBtn }) {
                                                     >
                                                         Bài viết đã lưu
                                                     </Link>
-                                                </li>
+                                                </li> */}
                                             </ul>
 
                                             <hr />

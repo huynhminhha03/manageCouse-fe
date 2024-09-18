@@ -11,8 +11,8 @@ import Spinner from '~/components/Spinner';
 const cx = classNames.bind(styles);
 
 function Login() {
-    const [username, setUsername] = useState({ value: 'hadep@ou.edu.vn', error: '' });
-    const [password, setPassword] = useState({ value: 'minhha2k3', error: '' });
+    const [username, setUsername] = useState({ value: 'manhwuday@gmail.com', error: '' });
+    const [password, setPassword] = useState({ value: '071003', error: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const usernameInputRef = useRef(null);
@@ -31,7 +31,8 @@ function Login() {
                 password: password.value,
             });
 
-            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('token', response.data);
+            console.log(response.data);
             window.location.reload();
         } catch (error) {
             // Xử lý lỗi ở đây
@@ -87,9 +88,6 @@ function Login() {
                 {password.error && <div className={cx('error-message')}>{password.error}</div>}
             </InputWrapper>
 
-            <InputWrapper>
-                <RememberLogin />
-            </InputWrapper>
 
             <InputWrapper>
                 <button

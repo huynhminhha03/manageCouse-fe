@@ -38,15 +38,10 @@ function BlogDetails() {
         if (user) {
             const fetchData = async () => {
                 try {
-                    // Gửi cả hai yêu cầu API cùng một lúc
-                    const [likeResponse, bookmarkResponse] = await Promise.all([
-                        authAPI().get(userApis.checkLikedBlog(blogId)),
-                        authAPI().get(userApis.checkBookmark(blogId)), // Đảm bảo API đúng
-                    ]);
+                    
+                    const likeResponse = await authAPI().get(userApis.checkLikedBlog(blogId));
 
-                    // Cập nhật state với dữ liệu từ API
                     setActivedLike(likeResponse.data.hasLiked);
-                    setActivedBookmark(bookmarkResponse.data.bookmarked);
                 } catch (error) {
                     console.log(error);
                 }
@@ -97,18 +92,16 @@ function BlogDetails() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [blogResponse, numberLikes, numberComments, otherUserBlogs] = await Promise.all([
+                const [blogResponse, numberLikes, numberComments] = await Promise.all([
                     authAPI().get(userApis.getBlogById(blogId)),
                     authAPI().get(userApis.getNumberBlogLikes(blogId)),
                     authAPI().get(userApis.getNumberBlogComments(blogId)),
-                    authAPI().get(userApis.getOtherBlogs(blogId)),
                 ]);
 
                 // Cập nhật state sau khi cả hai hàm đã hoàn thành
                 setBlogData(blogResponse.data);
                 setLikeCount(numberLikes.data.count);
                 setCommentCount(numberComments.data.total_comments);
-                setOtherBlogs(otherUserBlogs.data);
                 setLoading(false);
             } catch (error) {
                 console.log(error);
@@ -186,7 +179,6 @@ function BlogDetails() {
                             onClickLikeBtn={likeBlog}
                             commentCount={commentCount}
                         />
-                        <OtherPost posts={otherBlogs} setBlogId={setBlogId} />
                         <div className={cx('wrap-topic')}></div>
                     </div>
                     {showComment && (

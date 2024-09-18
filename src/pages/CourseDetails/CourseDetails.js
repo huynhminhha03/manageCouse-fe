@@ -29,7 +29,7 @@ function CourseDetails() {
             const checkRegisterCourse = async () => {
                 try {
                     const response = await authAPI().get(userApis.checkRegisterCourse(course_id));
-                    setHasRegister(response.data.registered);
+                    setHasRegister(response.data);
                 } catch (error) {
                     console.error(error);
                 }
@@ -118,15 +118,17 @@ function CourseDetails() {
                             </div>
 
                             <div className={cx('lesson-list')}>
-                                {courseData?.lessons?.map((lesson, index) => (
+                                {courseData?.lessons?.length > 0 ? courseData?.lessons?.map((lesson, index) => (
                                     <div key={index} className={cx('lesson-item')}>
                                         <span className={cx('icon-link')}>
                                             <VideoIcon />
                                             <div className={cx('lesson-name')}>{lesson?.title}</div>
                                         </span>
-                                        <span>{formatDuration(lesson?.duration) || '00:00'}</span>
+                                        {/* <span>{formatDuration(lesson?.duration) || '00:00'}</span> */}
                                     </div>
-                                ))}
+                                )) : (
+                                    <span>Hiện chưa có bài học nào</span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -137,12 +139,11 @@ function CourseDetails() {
                                 <div
                                     className={cx('img-bg')}
                                     style={{
-                                        backgroundImage: `url(${courseData?.image_url})`,
+                                        backgroundImage: `url(${courseData?.imageUrl})`,
                                     }}
                                 ></div>
                             </div>
                             <h5>{courseData?.is_free ? 'Miễn phí' : `${courseData?.price}đ`}</h5>
-                            <span className={cx('start-time')}>Bắt đầu vào {formatDate(courseData?.start_time)}</span>
 
                             <button className={cx('register-btn')} onClick={handleClick} disabled={loading}>
                                 <span className={cx('inner')}>

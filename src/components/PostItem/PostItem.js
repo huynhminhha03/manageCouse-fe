@@ -21,6 +21,7 @@ function PostItem(params) {
     const { setModalType } = useContext(ModalTypeContext);
 
     const bookmarkBlog = async () => {
+        
         if (user) {
             try {
                 await authAPI().post(userApis.bookmarkBlog(id));
@@ -33,19 +34,19 @@ function PostItem(params) {
         }
     };
 
-    useEffect(() => {
-        if (user) {
-            const fetchHasBookmark = async () => {
-                try {
-                    const response = await authAPI().get(userApis.checkBookmark(id));
-                    setActivedBookmark(response.data.bookmarked);
-                } catch (error) {
-                    console.log(error);
-                }
-            };
-            fetchHasBookmark();
-        }
-    }, [id, user]);
+    // useEffect(() => {
+    //     if (user) {
+    //         const fetchHasBookmark = async () => {
+    //             try {
+    //                 const response = await authAPI().get(userApis.checkBookmark(id));
+    //                 setActivedBookmark(response.data.bookmarked);
+    //             } catch (error) {
+    //                 console.log(error);
+    //             }
+    //         };
+    //         fetchHasBookmark();
+    //     }
+    // }, [id, user]);
 
     return (
         <div className={cx('wrapper')}>
@@ -58,7 +59,11 @@ function PostItem(params) {
                     <span>{name}</span>
                 </div>
                 <div className={cx('actions')}>
-                    <div className={cx('bookmark-btn', { actived: activedBookmark })} onClick={bookmarkBlog}>
+                    <div className={cx('bookmark-btn', { actived: activedBookmark })} 
+                    // onClick={bookmarkBlog}
+                    onClick={() => setActivedBookmark(!activedBookmark)}
+                    
+                    >
                         {activedBookmark ? <ActivedBookmarkIcon /> : <BookMarkIcon />}
                     </div>
                     <div className={cx('option-btn')}>
@@ -68,7 +73,7 @@ function PostItem(params) {
             </div>
             <div className={cx('body')}>
                 <div className={cx('info')}>
-                    <Link to={id}>
+                    <Link to={`/blog/${id}`}>
                         <h2 className={cx('title')}>{title}</h2>
                     </Link>
                     <p className={cx('desc')}>{desc}</p>

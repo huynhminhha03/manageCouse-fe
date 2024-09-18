@@ -86,7 +86,7 @@ function Register() {
                 email: email.value,
                 password: password.value,
             });
-            localStorage.setItem('token', loginResponse.data.token); // Lưu token vào localStorage
+            localStorage.setItem('token', loginResponse.data);
             console.log(loginResponse.data);
 
             window.location.reload(); // Tải lại trang để cập nhật trạng thái

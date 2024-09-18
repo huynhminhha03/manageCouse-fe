@@ -3,7 +3,6 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import styles from './CreateBlog.module.scss';
 import classNames from 'classnames/bind';
-import Topic from '~/components/Topic';
 import { useNavigate } from 'react-router-dom';
 import { authAPI, userApis } from '~/utils/api';
 import Spinner from '~/components/Spinner';
@@ -15,7 +14,6 @@ const CreateBlog = () => {
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
     const [content, setContent] = useState('');
-    const [topic, setTopic] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const navigate = useNavigate();
@@ -63,7 +61,6 @@ const CreateBlog = () => {
                     console.log(blogData);
                     setTitle(blogData.title);
                     setContent(blogData.content);
-                    setTopic(blogData.topic_id.slug);
                 } catch (error) {
                     console.error('Error fetching blog data:', error);
                 }
@@ -73,9 +70,7 @@ const CreateBlog = () => {
         fetchBlogData();
     }, [id]);
 
-    const handleSelectedTopic = ({ slug }) => {
-        setTopic(slug);
-    };
+   
 
     const handleSubmit = async () => {
         try {
@@ -85,14 +80,12 @@ const CreateBlog = () => {
                     title,
                     content,
                     desc,
-                    topic_slug: topic,
                 });
             } else {
                 await authAPI().post(userApis.createBlog, {
                     title,
                     content,
                     desc,
-                    topic_slug: topic,
                 });
             }
 
@@ -130,9 +123,7 @@ const CreateBlog = () => {
                     className={cx('quill-editor')}
                 />
             </div>
-            <div className={cx('wrap-topic')}>
-                <Topic setTopic={handleSelectedTopic} isTopicActivated={topic} title="Thêm chủ đề cho bài viết" />
-            </div>
+            
 
             <div className={cx('wrap-btn')}>
                 <button

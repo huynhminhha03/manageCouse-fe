@@ -1,125 +1,104 @@
 import axios from 'axios';
-import CheckTokenExpired from './checkTokenExpired';
 
-
-const HOST = 'https://f5b6-14-169-84-114.ngrok-free.app/api';
-
+const HOST = 'https://18a2-113-185-79-88.ngrok-free.app/api';
 
 export const userApis = {
-    getCurrentUser: '/current-user',
-    updateCurrentUser: '/current-user',
-    getReturnUrl: '/vnpay_return',
-    createPayment: '/create_payment_url',
-    getUserBySlug: (slug) => `/users/${slug}`,
+    getCurrentUser: '/users/current-user/',
+    updateCurrentUser: '/users/current-user/',
+    getReturnUrl: '/users/vnpay_return/',
+    createPayment: '/users/create_payment_url/',
+    getUserBySlug: (slug) => `/users/${slug}/`,
 
-    getAllCourses: '/courses',
-    getCoursesBySlug: '/courses/results',
-    getCourseDetails: (course_id) => `/courses/${course_id}`,
-    getQuickViewLessons: (course_id) => `/courses/${course_id}/lessons/quick-view`,
-    getLesson: (course_id, lesson_id) => `/courses/${course_id}/lessons/${lesson_id}`,
-    getAllLesson: (course_id) => `/courses/${course_id}/lessons`,
+    getAllCourses: '/users/courses/',
+    getCoursesBySlug: '/users/courses/results/',
+    getCourseDetails: (course_id) => `/users/courses/${course_id}/`,
+    getQuickViewLessons: (course_id) => `/users/courses/${course_id}/lessons/quick-view/`,
+    getLesson: (course_id, lesson_id) => `/users/courses/${course_id}/lessons/${lesson_id}/`,
+    getAllLesson: (course_id) => `/users/courses/${course_id}/lessons/`,
 
-    getMyCourses: '/my-courses',
-    getRegisterCourses: '/registered-courses',
-    showRegisterCourses: (slug) => `${slug}/registered-courses/show`,
-    getMyCourseDetails: (course_id) => `/my-courses/${course_id}`,
-    createCourse: '/my-courses',
-    updateCourse: (course_id) => `/my-courses/${course_id}`,
-    deleteCourse: (course_id) => `/my-courses/${course_id}`,
+    getMyCourses: '/users/my-courses/',
+    getRegisterCourses: '/users/registered-courses/',
+    showRegisterCourses: (slug) => `/users/${slug}/registered-courses/show/`,
+    getMyCourseDetails: (course_id) => `/users/my-courses/${course_id}/`,
+    createCourse: '/users/my-courses/',
+    updateCourse: (course_id) => `/users/my-courses/${course_id}/`,
+    deleteCourse: (course_id) => `/users/my-courses/${course_id}/`,
 
-    getLessonsByCourseId: (course_id) => `/my-courses/${course_id}/lessons`,
-    getLessonById: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
-    createLesson: (course_id) => `/my-courses/${course_id}/lessons`,
-    updateLesson: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
-    deleteLesson: (course_id, lesson_id) => `/my-courses/${course_id}/lessons/${lesson_id}`,
+    getLessonsByCourseId: (course_id) => `/users/courses/${course_id}/lessons/`,
+    getLessonById: (course_id, lesson_id) => `/users/courses/${course_id}/lessons/${lesson_id}/`,
+    createLesson: (course_id) => `/users/my-courses/${course_id}/lessons/`,
+    updateLesson: (course_id, lesson_id) => `/users/courses/${course_id}/lessons/${lesson_id}/`,
+    deleteLesson: (course_id, lesson_id) => `/users/courses/${course_id}/lessons/${lesson_id}/`,
 
-    registerCourse: (course_id) => `/courses/${course_id}/register`,
-    checkRegisterCourse: (course_id) => `/courses/${course_id}/register/checked`,
+    registerCourse: (course_id) => `/users/courses/${course_id}/register/`,
+    checkRegisterCourse: (course_id) => `/users/courses/${course_id}/register/checked/`,
 
-    createBlog: '/my-blogs',
-    getMyBlogs: '/my-blogs',
-    getMyBlogById: (id) => `/my-blogs/${id}`,
-    updateMyBlog: (id) => `/my-blogs/${id}`,
+    createBlog: '/users/my-blogs/',
+    getMyBlogs: '/users/my-blogs/',
+    getMyBlogById: (id) => `/users/s/my-blogs/${id}/`,
+    updateMyBlog: (id) => `/users/s/my-blogs/${id}/`,
 
-    getAllBlogs: '/blogs/',
-    getBlogsByTopic: (slug) => `/blogs/topics/${slug}`,
-    getBlogById: (id) => `/blogs/${id}`,
-    getOtherBlogs: (blog_id) => `/blogs/${blog_id}/others`,
+    getAllBlogs: '/users/blogs/',
+    getBlogById: (id) => `/users/s/blogs/${id}/`,
+    getOtherBlogs: (blog_id) => `/users/blogs/${blog_id}/others/`,
 
-    getNumberBlogLikes: (id) => `/blogs/${id}/likes`,
-    getNumberBlogComments: (id) => `/blogs/${id}/count-comments`,
-    likeBlog: (id) => `/blogs/${id}/likes`,
-    checkLikedBlog: (id) => `/blogs/${id}/likes/checked`,
+    getNumberBlogLikes: (id) => `/users/blogs/${id}/likes/`,
+    getNumberBlogComments: (id) => `/users/s/blogs/${id}/count-comments/`,
+    likeBlog: (id) => `/users/s/blogs/${id}/likes/`,
+    checkLikedBlog: (id) => `/users/s/blogs/${id}/likes/checked/`,
 
-    getAllBookmarkBlogs: '/my-bookmarks',
-    bookmarkBlog: (id) => `/blogs/${id}/bookmarks`,
-    deleteBookmarkBlogs: (id) => `/my-bookmarks/${id}`,
-    checkBookmark: (id) => `/blogs/${id}/bookmarks/checked`,
+    getAllBookmarkBlogs: '/users/my-bookmarks/',
+    bookmarkBlog: (id) => `/users/blogs/${id}/bookmarks/`,
+    deleteBookmarkBlogs: (id) => `/users/my-bookmarks/${id}/`,
+    checkBookmark: (id) => `/users/blogs/${id}/bookmarks/checked/`,
 
-    getParentComments: (type, id) => `/${type}/${id}/comments`,
-    createParentComment: (type, id) => `/${type}/${id}/comments`,
-    createReplyComment: (type, blog_id) => `/${type}/${blog_id}/comments`,
-    getChildrenComments: (type, blog_id, parent_comment_id) => `/${type}/${blog_id}/comments/${parent_comment_id}`,
+    getParentComments: (type, id) => `/users/${type}/${id}/comments/`,
+    createParentComment: (type, id) => `/users/${type}/${id}/comments/`,
+    createReplyComment: (type, blog_id) => `/users/${type}/${blog_id}/comments/`,
+    getChildrenComments: (type, blog_id, parent_comment_id) => `/users/${type}/${blog_id}/comments/${parent_comment_id}/`,
     getNumberRepliesComment: (type, blog_id, parent_comment_id) =>
-        `/${type}/${blog_id}/comments/${parent_comment_id}/count`,
+        `/users/${type}/${blog_id}/comments/${parent_comment_id}/count/`,
 
-    getLikeComments: (id) => `/comments/${id}/likes`, //Tách checkLiked ra vì checkLiked cần login
-    likeComment: (id) => `/comments/${id}/likes`,
-    getCommentById: (id) => `/comments/${id}`,
-    updateComment: (id) => `/comments/${id}`,
-    deleteComment: (id) => `/comments/${id}`,
-    checkLikedComment: (id) => `/comments/${id}/check-liked`,
+    getLikeComments: (id) => `/users/comments/${id}/likes/`, //Tách checkLiked ra vì checkLiked cần login
+    likeComment: (id) => `/users/comments/${id}/likes/`,
+    getCommentById: (id) => `/users/comments/${id}/`,
+    updateComment: (id) => `/users/comments/${id}/`,
+    deleteComment: (id) => `/users/comments/${id}/`,
+    checkLikedComment: (id) => `/users/comments/${id}/check-liked/`,
 
-    login: '/auth/login/',
-    checkEmail: '/auth/check-email/',
-    register: '/auth/register/',
-    verifyEmail: '/auth/verify-email/',
-    sendOTP: '/auth/forgot-password/',
+    login: '/users/auth/login/',
+    checkEmail: '/users/auth/check-email/',
+    register: '/users/auth/register/',
+    verifyEmail: '/users/auth/verify-email/',
+    sendOTP: '/users/auth/forgot-password/',
 
-    verifyOTP: '/auth/verify-otp/',
-    resetPassword: '/auth/reset-password/',
-    changePassword: 'auth/change-password',
-    refreshToken: '/refresh-token/',
-    users: '/',
+    verifyOTP: '/users/auth/verify-otp/',
+    resetPassword: '/users/auth/reset-password/',
+    changePassword: '/users/auth/change-password/',
+    refreshToken: '/users/refresh-token/',
+    users: '/users/',
 };
 
 const api = axios.create({
     baseURL: HOST,
     headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': '69420',
     },
-    withCredentials: true,
 });
 
 export const authAPI = () => {
     const token = localStorage.getItem('token');
-    console.log('Token: ', token);
+    console.log('Token: /', token);
 
-    const instance = axios.create({
+    return axios.create({
         baseURL: HOST,
         headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '69420',
         },
-        withCredentials: true,
     });
-
-    instance.interceptors.request.use(
-        (config) => {
-            const token = localStorage.getItem('token');
-
-            if (CheckTokenExpired(token)) {
-                localStorage.removeItem('token');
-                throw new axios.Cancel('Token expired. Redirecting to login.');
-            }
-
-            return config;
-        },
-        (error) => {
-            return Promise.reject(error);
-        },
-    );
-
-    return instance;
 };
 
 export default api;

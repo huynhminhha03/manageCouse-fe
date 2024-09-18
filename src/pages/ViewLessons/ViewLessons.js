@@ -25,7 +25,7 @@ function ViewLessons() {
     // Hàm để cập nhật URL và lesson được chọn, dùng useCallback để tránh thay đổi mỗi lần render
     const handleSelectLesson = useCallback(
         (lesson) => {
-            navigate(`/course/${course_id}/lesson/${lesson._id}`, { replace: true });
+            navigate(`/course/${course_id}/lesson/${lesson.id}`, { replace: true });
             setSelectedLesson(lesson);
         },
         [course_id, navigate]
@@ -33,7 +33,7 @@ function ViewLessons() {
 
     // Hàm để chuyển đến bài học trước
     const handlePrevLesson = () => {
-        const currentIndex = lessonData.findIndex((lesson) => lesson._id === selectedLesson._id);
+        const currentIndex = lessonData.findIndex((lesson) => lesson.id === selectedLesson.id);
         if (currentIndex > 0) {
             handleSelectLesson(lessonData[currentIndex - 1]);
         }
@@ -41,7 +41,7 @@ function ViewLessons() {
 
     // Hàm để chuyển đến bài học tiếp theo
     const handleNextLesson = () => {
-        const currentIndex = lessonData.findIndex((lesson) => lesson._id === selectedLesson._id);
+        const currentIndex = lessonData.findIndex((lesson) => lesson.id === selectedLesson.id);
         if (currentIndex < lessonData.length - 1) {
             handleSelectLesson(lessonData[currentIndex + 1]);
         }
@@ -62,7 +62,7 @@ function ViewLessons() {
                 if (!lesson_id && lessonsRes.data.length > 0) {
                     handleSelectLesson(lessonsRes.data[0]);
                 } else {
-                    const currentLesson = lessonsRes.data.find((lesson) => lesson._id === lesson_id);
+                    const currentLesson = lessonsRes.data.find((lesson) => lesson.id === lesson_id);
                     if (currentLesson) {
                         setSelectedLesson(currentLesson);
                     }
@@ -109,7 +109,7 @@ function ViewLessons() {
                     <div className={cx('video-wrapper')}>
                         <video
                             className={cx('video')}
-                            src={selectedLesson.video_url}
+                            src={selectedLesson.videoUrl}
                             controls
                             controlsList="nodownload"
                             onContextMenu={handleContextMenu}
@@ -121,7 +121,7 @@ function ViewLessons() {
                                 <button
                                     className={cx('prev-btn')}
                                     onClick={handlePrevLesson}
-                                    disabled={lessonData.findIndex((lesson) => lesson._id === selectedLesson._id) === 0}
+                                    disabled={lessonData.findIndex((lesson) => lesson.id === selectedLesson.id) === 0}
                                 >
                                     BÀI TRƯỚC
                                 </button>
@@ -129,7 +129,7 @@ function ViewLessons() {
                                     className={cx('next-btn')}
                                     onClick={handleNextLesson}
                                     disabled={
-                                        lessonData.findIndex((lesson) => lesson._id === selectedLesson._id) ===
+                                        lessonData.findIndex((lesson) => lesson.id === selectedLesson.id) ===
                                         lessonData.length - 1
                                     }
                                 >
@@ -143,13 +143,13 @@ function ViewLessons() {
                         {lessonData.map((lesson, index) => (
                             <div
                                 key={index}
-                                className={cx('lesson-item', { active: lesson._id === selectedLesson._id })}
+                                className={cx('lesson-item', { active: lesson.id === selectedLesson.id })}
                                 onClick={() => handleSelectLesson(lesson)}
                             >
                                 <span>
                                     {index + 1}. {lesson.title}
                                 </span>
-                                <span>{formatDuration(lesson.duration)}</span>
+                                {/* <span>{formatDuration(lesson.duration)}</span> */}
                             </div>
                         ))}
                     </div>

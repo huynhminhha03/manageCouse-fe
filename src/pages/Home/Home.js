@@ -15,7 +15,7 @@ function Home() {
         const fetchAllCourse = async () => {
             try {
                 const response = await api.get(userApis.getAllCourses);
-                setCourses(response.data);
+                setCourses(response.data.content);
                 console.log('response: ', response.data);
             } catch (error) {
                 console.log(error);
@@ -31,16 +31,16 @@ function Home() {
                 <Classify title="Khóa học Pro" label={'Mới'} viewMore={'Xem tất cả'}>
                     <div className="row">
                         {courses &&
-                            courses?.proCourses &&
-                            courses?.proCourses.map((proCourse, index) => (
+                            !courses?.isFree &&
+                            courses?.map((proCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        id={proCourse?._id}
-                                        src={proCourse?.image_url}
+                                        id={proCourse?.id}
+                                        src={proCourse?.imageUrl}
                                         title={proCourse?.title}
-                                        desc={proCourse?.desc}
+                                        desc={proCourse?.des}
                                         price={proCourse?.price}
-                                        isFree={proCourse?.is_free}
+                                        isFree={proCourse?.isFree}
                                         name={proCourse?.creator?.name}
                                         avatar={proCourse?.creator?.avatar}
                                     />
@@ -52,16 +52,16 @@ function Home() {
                 <Classify title="Khóa học miễn phí" viewMore={'Xem tất cả'}>
                     <div className="row">
                         {courses &&
-                            courses?.freeCourses &&
-                            courses?.freeCourses.map((freeCourse, index) => (
+                            courses?.isFree &&
+                            courses?.map((freeCourse, index) => (
                                 <div key={index} className="col mt-5 col-lg-3 col-md-4 col-sm-6">
                                     <CardItem
-                                        id={freeCourse?._id}
-                                        src={freeCourse?.image_url}
+                                        id={freeCourse?.id}
+                                        src={freeCourse?.imageUrl}
                                         title={freeCourse?.title}
-                                        desc={freeCourse?.desc}
+                                        desc={freeCourse?.des}
                                         price={freeCourse?.price}
-                                        isFree={freeCourse?.is_free}
+                                        isFree={freeCourse?.isFree}
                                         name={freeCourse?.creator?.name}
                                         avatar={freeCourse?.creator?.avatar}
                                     />

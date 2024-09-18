@@ -77,7 +77,7 @@ function Profile() {
                             <div className={cx('participation')}>
                                 <ParticipationIcon className={cx('participation-icon')} />
                                 <span>
-                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ {calculateTimeSinceCreation(userData.createdAt)}
+                                    Thành viên của <strong>Yuko - Học lập trình để đi làm</strong> từ {calculateTimeSinceCreation(userData.createdDate)}
                                 </span>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ function Profile() {
                         <h4 className={cx('title')}>Các khóa học đã tham gia</h4>
 
                         <div>
-                            {registerCourse && registerCourse.map((course) => (
+                            {registerCourse ? registerCourse.map((course) => (
                                 <div className={cx('inner')} key={course?.course_id?._id}>
                                     <Link className={cx('thumb')} to={`/course/${course?.course_id?._id}`}>
                                         <img
@@ -110,7 +110,9 @@ function Profile() {
                                         <p className={cx('info-desc')}>{course?.course_id?.desc}</p>
                                     </div>
                                 </div>
-                            ))}
+                            )): 
+                            <span className={cx('no-result')}>Hiện chưa đăng ký khoá học nào</span>
+                            }
                         </div>
                     </div>
                 </div>

@@ -112,9 +112,6 @@
     text-align: center;
 }
 
-.no-result {
-    font-size: 1.3rem;
-}
 
 .index-module_l-7 {
     width: 58.33333%;
@@ -166,4 +163,10 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+}
+
+.no-result {
+    margin-top: 16px;
+    font-size: 1.4rem;
+    color: #757575;
 }
