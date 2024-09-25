@@ -30,7 +30,7 @@ function Header({ transparent, hasBackBtn }) {
     const [showNotify, setShowNotify] = useState(false);
     const [showProfile, setShowProfile] = useState(false);
     const token = localStorage.getItem('token');
-    console.log(token);
+    
     const handleLogout = () => {
         localStorage.removeItem('token');
         window.location.reload();
@@ -53,7 +53,21 @@ function Header({ transparent, hasBackBtn }) {
     }
 
     useEffect(() => {
-        if (token) {
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenURL = urlParams.get('token');
+
+        if (tokenURL) {
+            // Lưu token vào localStorage
+            localStorage.setItem('token', tokenURL);
+
+            // Xóa token khỏi URL mà không tải lại trang
+            const newUrl = window.location.pathname ;
+            window.history.replaceState({}, '', newUrl);
+
+        } 
+
+         if (token || tokenURL) {
             const fetchUserData = async () => {
                 try {
                     const response = await authAPI().get(userApis.getCurrentUser);
@@ -67,6 +81,7 @@ function Header({ transparent, hasBackBtn }) {
             };
             fetchUserData();
         }
+        
     }, [token, setUser]);
 
     const handleShowRegisterCourses = async () => {
@@ -315,7 +330,7 @@ function Header({ transparent, hasBackBtn }) {
                                                         Đăng xuất
                                                     </span>
                                                 </li>
-                                            </ul>
+                                            </ul> 
                                         </div>
                                     </PopperWrapper>
                                 )}

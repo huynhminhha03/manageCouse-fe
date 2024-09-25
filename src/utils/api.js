@@ -56,7 +56,8 @@ export const userApis = {
     getParentComments: (type, id) => `/api/users/${type}/${id}/comments/`,
     createParentComment: (type, id) => `/api/users/${type}/${id}/comments/`,
     createReplyComment: (type, blog_id) => `/api/users/${type}/${blog_id}/comments/`,
-    getChildrenComments: (type, blog_id, parent_comment_id) => `/api/users/${type}/${blog_id}/comments/${parent_comment_id}/`,
+    getChildrenComments: (type, blog_id, parent_comment_id) =>
+        `/api/users/${type}/${blog_id}/comments/${parent_comment_id}/`,
     getNumberRepliesComment: (type, blog_id, parent_comment_id) =>
         `/api/users/${type}/${blog_id}/comments/${parent_comment_id}/count/`,
 

@@ -10,8 +10,10 @@ const cx = classNames.bind(styles);
 
 function Home() {
     const [courses, setCourses] = useState('');
-
+    
     useEffect(() => {
+        
+
         const fetchAllCourse = async () => {
             try {
                 const response = await api.get(userApis.getAllCourses);

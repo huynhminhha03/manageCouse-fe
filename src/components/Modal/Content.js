@@ -24,7 +24,7 @@ const LoginIcons = [
     {
         icon: <GoogleIcon />,
         title: 'Đăng nhập với Google',
-        to: config.routes.roadmap,
+        onClick: () => (window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`),
     },
     {
         icon: <FacebookIcon />,
@@ -47,7 +47,7 @@ const RegisterIcons = [
     {
         icon: <GoogleIcon />,
         title: 'Đăng ký với Google',
-        to: config.routes.roadmap,
+        onClick: () => (window.location.href = `${process.env.REACT_APP_API_URL}/oauth2/authorization/google`),
     },
     {
         icon: <FacebookIcon />,
@@ -129,7 +129,12 @@ function Content() {
                     {modalType === 'register' || modalType === 'login' ? (
                         <>
                             {icons.map((item, index) => (
-                                <a href={item.to} className={cx('wrapper-btn')} key={index} onClick={(e) => handleClick(e, item.to)}>
+                                <a
+                                    href={item.to}
+                                    className={cx('wrapper-btn')}
+                                    key={index}
+                                    onClick={!item.to ? item.onClick : (e) => handleClick(e, item.to)}
+                                >
                                     <span className={cx('icon')}>{item.icon}</span>
                                     <span className={cx('title')}>{item.title}</span>
                                 </a>
